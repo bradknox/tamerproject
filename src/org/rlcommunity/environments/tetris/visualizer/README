@@ -1,0 +1,1 @@
+Tetris visualizer classes are instantiated by the RLViz thread, not by the Tetris environment thread. These vizualizer classes can only communicate with the environment via RLGlue messages.

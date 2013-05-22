@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+<xsd:element name="config">
+    <xsd:complexType>
+        <xsd:all>
+            <xsd:element name="constants" type="ConstantSet" />
+            <xsd:element name="environment" type="EnvSpec" />
+        </xsd:all>
+    </xsd:complexType>
+</xsd:element>
+
+<!-- physical constants -->
+
+<xsd:complexType name="ConstantSet">
+    <xsd:all>
+        <xsd:element name="frictionTangential" type="xsd:double" />
+        <xsd:element name="frictionPerpendicular" type="xsd:double" />
+        <xsd:element name="buoyancy" type="xsd:double" />
+        <xsd:element name="pressure" type="xsd:double" />
+        <xsd:element name="gravity" type="xsd:double" />
+        <xsd:element name="muscleActive" type="xsd:double" />
+        <xsd:element name="musclePassive" type="xsd:double" />
+        <xsd:element name="muscleNormalizedMinLength" type="xsd:double" />
+        <xsd:element name="muscleDamping" type="xsd:double" />
+        <xsd:element name="surfaceLevel" type="xsd:double" />
+        <xsd:element name="repulsionConstant" type="NonNegativeDouble" />
+        <xsd:element name="repulsionPower" type="xsd:double" />
+        <xsd:element name="repulsionThreshold" type="PositiveDouble" />
+    </xsd:all>
+</xsd:complexType>
+
+<!-- environment specification -->
+
+<xsd:complexType name="EnvSpec">
+    <xsd:all>
+        <xsd:element name="arm" type="ArmSpec" />
+        <xsd:element ref="task" />
+    </xsd:all>
+</xsd:complexType>
+
+<!-- arm -->
+
+<xsd:complexType name="ArmSpec">
+    <xsd:sequence>
+        <xsd:element name="nodePair" type="NodePairSpec" minOccurs="2" maxOccurs="unbounded" />
+    </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="NodePairSpec">
+    <xsd:sequence>
+        <xsd:element name="upper" type="NodeSpec" />
+        <xsd:element name="lower" type="NodeSpec" />
+    </xsd:sequence>
+</xsd:complexType>
+
+<xsd:complexType name="NodeSpec">
+    <xsd:attribute name="mass" type="PositiveDouble" use="required" />
+    <xsd:attribute name="position" type="Duple" use="required" />
+    <xsd:attribute name="velocity" type="Duple" use="optional" default="0 0" />
+</xsd:complexType>
+
+<xsd:simpleType name="Duple">
+    <xsd:restriction>
+        <xsd:simpleType>
+            <xsd:list itemType="xsd:double" />
+        </xsd:simpleType>
+        <xsd:length value="2" />
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="NonNegativeDouble">
+    <xsd:restriction base="xsd:double">
+        <xsd:minInclusive value="0.0" />
+    </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:simpleType name="PositiveDouble">
+    <xsd:restriction base="xsd:double">
+        <xsd:minExclusive value="0.0" />
+    </xsd:restriction>
+</xsd:simpleType>
+
+<!-- tasks -->
+
+<xsd:element name="task" type="TaskDef" abstract="true" />
+
+<xsd:complexType name="TaskDef" abstract="true">
+    <xsd:attribute name="timeLimit" type="xsd:positiveInteger" />
+    <xsd:attribute name="stepReward" type="xsd:double" />
+</xsd:complexType>
+
+<!-- food tasks -->
+
+<xsd:element name="foodTask" type="FoodTaskDef" substitutionGroup="task" />
+
+<xsd:complexType name="FoodTaskDef">
+    <xsd:complexContent>
+        <xsd:extension base="TaskDef">
+            <xsd:sequence>
+                <xsd:element name="mouth" type="MouthSpec" />
+                <xsd:element name="food" type="FoodSpec" maxOccurs="unbounded" />
+            </xsd:sequence>
+        </xsd:extension>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="MouthSpec">
+    <xsd:attribute name="x" type="xsd:double" />
+    <xsd:attribute name="y" type="xsd:double" />
+    <xsd:attribute name="width" type="xsd:double" />
+    <xsd:attribute name="height" type="xsd:double" />
+</xsd:complexType>
+
+<xsd:complexType name="FoodSpec">
+    <xsd:complexContent>
+        <xsd:extension base="NodeSpec">
+            <xsd:attribute name="reward" type="xsd:double" />
+        </xsd:extension>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<!-- target tasks -->
+
+<xsd:element name="targetTask" type="TargetTaskDef" substitutionGroup="task" />
+
+<xsd:complexType name="TargetTaskDef">
+    <xsd:complexContent>
+        <xsd:extension base="TaskDef">
+            <xsd:sequence>
+                <xsd:element ref="objective" />
+            </xsd:sequence>
+        </xsd:extension>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<xsd:element name="objective" type="ObjectiveSpec" abstract="true" />
+
+<xsd:element name="choice" type="ChoiceSpec" substitutionGroup="objective" />
+
+<xsd:element name="sequence" type="SequenceSpec" substitutionGroup="objective" />
+
+<xsd:element name="target" type="TargetSpec" substitutionGroup="objective" />
+
+<xsd:complexType name="ObjectiveSpec" abstract="true" />
+
+<xsd:complexType name="ObjectiveSetSpec">
+    <xsd:complexContent>
+        <xsd:extension base="ObjectiveSpec">
+            <xsd:sequence>
+                <xsd:element ref="objective" minOccurs="2" maxOccurs="unbounded" />
+            </xsd:sequence>
+        </xsd:extension>
+    </xsd:complexContent>
+</xsd:complexType>
+
+<!-- Although ChoiceSpec and SequenceSpec have the same content model, they
+  are made distinct types so that they will be bound to different Java
+  classes. -->
+<xsd:complexType name="ChoiceSpec">
+    <xsd:complexContent><xsd:extension base="ObjectiveSetSpec" /></xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="SequenceSpec">
+    <xsd:complexContent><xsd:extension base="ObjectiveSetSpec" /></xsd:complexContent>
+</xsd:complexType>
+
+<xsd:complexType name="TargetSpec">
+    <xsd:complexContent>
+        <xsd:extension base="ObjectiveSpec">
+            <xsd:attribute name="position" type="Duple" />
+            <xsd:attribute name="reward" type="xsd:double" />
+        </xsd:extension>
+    </xsd:complexContent>
+</xsd:complexType>
+
+</xsd:schema>
