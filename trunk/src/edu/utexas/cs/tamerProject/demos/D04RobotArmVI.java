@@ -30,7 +30,7 @@ import edu.utexas.cs.tamerProject.applet.RLApplet;
  * @author bradknox
  *
  */
-public class D4RobotArmVI extends RLApplet {
+public class D04RobotArmVI extends RLApplet {
 	private static final long serialVersionUID = 672112553565074878L;
 
 	public void initPanel() {

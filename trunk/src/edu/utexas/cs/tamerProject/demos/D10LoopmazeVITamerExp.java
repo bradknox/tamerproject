@@ -34,7 +34,7 @@ import edu.utexas.cs.tamerProject.agents.dynamicProgramming.DPAgent;
  * @author bradknox
  *
  */
-public class D9LoopmazeVITamerExp extends TamerApplet{
+public class D10LoopmazeVITamerExp extends TamerApplet{
 	
 	private static final long serialVersionUID = 6816466628950215810L;
 	private static final boolean ADD_FAILURE_STATE = true; // creates a pit in LoopMaze
@@ -46,7 +46,7 @@ public class D9LoopmazeVITamerExp extends TamerApplet{
 		/*
 		 * Instantiate experiment class
 		 */
-		exp = new D9LoopmazeVITamerHelper();		
+		exp = new D10LoopmazeVITamerHelper();		
 		
 		/*
 		 * Instantiate environment
@@ -72,7 +72,7 @@ public class D9LoopmazeVITamerExp extends TamerApplet{
 	 *  after the user inputs their user ID and PreExpPanel is finished.
 	 */
 	protected void prepForStartTask(){
-		exp.processTrainerUnique(null, D9LoopmazeVITamerExp.this.trainerUnique);
+		exp.processTrainerUnique(null, D10LoopmazeVITamerExp.this.trainerUnique);
 		
 		/*
 		 * Init agent

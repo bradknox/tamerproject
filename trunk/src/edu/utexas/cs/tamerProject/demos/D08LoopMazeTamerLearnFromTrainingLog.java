@@ -8,6 +8,7 @@ import org.rlcommunity.agents.random.RandomAgent;
 import edu.utexas.cs.tamerProject.envModels.EnvWrapper;
 import edu.utexas.cs.tamerProject.environments.loopmaze.LoopMaze;
 import edu.utexas.cs.tamerProject.environments.robotarm.RobotArm;
+import edu.utexas.cs.tamerProject.experimentTools.LogTrainer;
 
 import org.rlcommunity.rlglue.codec.AgentInterface;
 import org.rlcommunity.rlglue.codec.EnvironmentInterface;
@@ -34,7 +35,7 @@ import edu.utexas.cs.tamerProject.applet.TamerApplet;
  * @author bradknox
  *
  */
-public class D5LoopMazeTamer extends TamerApplet {
+public class D08LoopMazeTamerLearnFromTrainingLog extends TamerApplet {
 	private static final long serialVersionUID = 672112553565074878L;
 
 	public void initPanel() {
@@ -91,6 +92,14 @@ public class D5LoopMazeTamer extends TamerApplet {
 		this.getContentPane().add(rlPanel);
 		this.rlPanel.runLocal.addObserver(this);
 		rlPanel.runLocal.initExp();
+		
+		/*
+		 * Train agent from a log file of previous training (easiest to do after 
+		 * initExp() above, which call agent_init()).
+		 */
+		String logFilePath = "./edu/utexas/cs/tamerProject/demos/expTamerLoopMaze.log";
+		LogTrainer.trainOnLog(logFilePath, agent, 1);
+		
 		rlPanel.runLocal.startExp();
 	}
 	
