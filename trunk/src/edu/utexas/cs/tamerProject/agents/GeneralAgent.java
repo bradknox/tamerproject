@@ -101,6 +101,7 @@ public abstract class GeneralAgent implements AgentInterface{
 
 	protected boolean isTopLevelAgent = true; // false when an agent object is a member of another agent object. 
 	public static boolean isApplet = false;
+	public static boolean canWriteToFile = false; // set to true to allow logging to local file system
 	public boolean enableGUI = false; // true enables locally created GUIs
 	
 	protected boolean inTrainSess;
@@ -299,7 +300,7 @@ public abstract class GeneralAgent implements AgentInterface{
 			System.out.println("Keeping a previously instantiated model in agent_init()!!!!!");
 		System.out.println("model after initialization: " + agent.model);
 		
-		agent.recHandler = new RecordHandler(!isApplet);
+		agent.recHandler = new RecordHandler(GeneralAgent.canWriteToFile);
 		System.out.println(agent.getClass().getName() + " masterLogSwitch: " + agent.masterLogSwitch);
 		
 		/*
@@ -325,7 +326,7 @@ public abstract class GeneralAgent implements AgentInterface{
     }
     
     protected void startInitHelper(String taskSpec) {
-    	if (!GeneralAgent.isApplet) {
+    	if (GeneralAgent.canWriteToFile) {
     		System.out.println("unique: " + unique);
     		
     		if (RLLIBRARY_PATH.equals(""))
