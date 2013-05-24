@@ -37,7 +37,7 @@ import edu.utexas.cs.tamerProject.params.Params;
  * @author bradknox
  *
  */
-public class D9LoopmazeVITamerHelper extends GeneralExperiment {
+public class D10LoopmazeVITamerHelper extends GeneralExperiment {
 
 	static boolean debug = true;
 
@@ -77,7 +77,7 @@ public class D9LoopmazeVITamerHelper extends GeneralExperiment {
 	static final int EXP_NAME_I = 6;
 
 
-	public D9LoopmazeVITamerHelper(){
+	public D10LoopmazeVITamerHelper(){
 	}
 
 
@@ -171,7 +171,7 @@ public class D9LoopmazeVITamerHelper extends GeneralExperiment {
 		System.out.println("\n\nAgent in " + this.getClass().getSimpleName() + ": " + agent);
 		System.out.println("Stack: " + Arrays.toString(Thread.currentThread().getStackTrace()));
 
-		String unique = D9LoopmazeVITamerHelper.makeUnique(args);
+		String unique = D10LoopmazeVITamerHelper.makeUnique(args);
 		agent.setUnique(this.getClass().getSimpleName() + "%" + unique);
 		//agent.setRecordRew(true); // records predictions of human reward
 
@@ -179,7 +179,7 @@ public class D9LoopmazeVITamerHelper extends GeneralExperiment {
 		agent.enableGUI = false;
 		agent.tamerAgent.EP_END_PAUSE = 0;
 		agent.useTamer = true;
-		agent.setDiscountFactorForLearning(D9LoopmazeVITamerHelper.discParam);
+		agent.setDiscountFactorForLearning(D10LoopmazeVITamerHelper.discParam);
 
 		agent.PLANNING_DEPTH = this.depthForUCT;
 		agent.printPostSample = true;
@@ -224,7 +224,7 @@ public class D9LoopmazeVITamerHelper extends GeneralExperiment {
 		System.out.println("\n\nAgent in " + this.getClass().getSimpleName() + ": " + agent);
 		System.out.println("Stack: " + Arrays.toString(Thread.currentThread().getStackTrace()));
 
-		String unique = D9LoopmazeVITamerHelper.makeUnique(args);
+		String unique = D10LoopmazeVITamerHelper.makeUnique(args);
 		agent.setUnique(this.getClass().getSimpleName() + "%" + unique);
 		//agent.setRecordRew(true); // records predictions of human reward
 
@@ -233,7 +233,7 @@ public class D9LoopmazeVITamerHelper extends GeneralExperiment {
 		agent.tamerAgent.EP_END_PAUSE = 0;
 		agent.useTamer = true;
 
-		agent.setDiscountFactorForLearning(D9LoopmazeVITamerHelper.discParam);
+		agent.setDiscountFactorForLearning(D10LoopmazeVITamerHelper.discParam);
 		agent.timeBtwnDPSweeps = this.timeBtwnDPSweeps;
 		agent.printSweeps = false;
 
@@ -377,11 +377,11 @@ public class D9LoopmazeVITamerHelper extends GeneralExperiment {
 
 
 	public static void main(String[] args) {
-		if (D9LoopmazeVITamerHelper.debug) {
+		if (D10LoopmazeVITamerHelper.debug) {
 			args = getDebugArgsStrArray();
 		}
 
-		D9LoopmazeVITamerHelper exp = new D9LoopmazeVITamerHelper();
+		D10LoopmazeVITamerHelper exp = new D10LoopmazeVITamerHelper();
 		exp.dynProg = false;
 		exp.runOneExp(args);
 	}

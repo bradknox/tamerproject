@@ -33,7 +33,7 @@ import edu.utexas.cs.tamerProject.applet.RLApplet;
  * @author bradknox
  *
  */
-public class D1LoopmazeRandom extends RLApplet {
+public class D01LoopmazeRandom extends RLApplet {
 	private static final long serialVersionUID = 672112553565074878L;
 
 	public void initPanel() {

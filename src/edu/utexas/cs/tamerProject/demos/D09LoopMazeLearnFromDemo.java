@@ -14,30 +14,35 @@ import org.rlcommunity.rlglue.codec.EnvironmentInterface;
 
 import rlVizLib.Environments.SampleableEnvBase;
 
-import edu.utexas.cs.tamerProject.agents.GeneralAgent;
 import edu.utexas.cs.tamerProject.agents.dynamicProgramming.DPAgent;
 import edu.utexas.cs.tamerProject.agents.sarsaLambda.SarsaLambdaAgent;
 import edu.utexas.cs.tamerProject.agents.tamer.TamerAgent;
+import edu.utexas.cs.tamerProject.agents.imitation.ImitationAgent;
 import edu.utexas.cs.tamerProject.applet.RLApplet;
 import edu.utexas.cs.tamerProject.applet.RLPanel;
 import edu.utexas.cs.tamerProject.applet.RunLocalExperiment;
 import edu.utexas.cs.tamerProject.applet.TamerApplet;
 
 /**
- * This class runs an agent that uses a TAMER agent as a module for helping
- * in its own learning and action selection. The agent class, not this class,
- * should be of more interest.
+ * This class runs a simple learning-from-demonstration agent. The agent
+ * is performing regression to map from states to action from the 
+ * demonstrated samples. (It uses regression instead of classification
+ * both because it's been used to debug TAMER algorithms, which use
+ * regression, and because it roughly learns the proportion of the time
+ * that the user inputs each action and then chooses the action taken
+ * most often in the current state. These proportions may not add to 1 
+ * exactly.) 
  * 
- * ******************************************************************************
- * Many uses cases of this codebase will follow FrameAgentForTamer but not use the 
- * applet environment or even RLGlue-compatible environments. See 
- * FrameAgentForTamer's comments for more on such usage. 
- * ****************************************************************************** 
+ * As with the TamerAgent, the space bar turns training on and off (i.e., 
+ * the agent will only update its reward model when training is on). 
+ * Also, the arrow keys will control the agent when training is on. Turn
+ * off training to see the policy the agent has learned. This agent works
+ * in the same environments as TamerAgent.
  * 
  * @author bradknox
  *
  */
-public class D7LoopMazeTamerAsModule extends TamerApplet {
+public class D09LoopMazeLearnFromDemo extends TamerApplet {
 	private static final long serialVersionUID = 672112553565074878L;
 
 	public void initPanel() {
@@ -45,9 +50,25 @@ public class D7LoopMazeTamerAsModule extends TamerApplet {
 		/*
 		 * Instantiate the agent
 		 */
-		GeneralAgent agent = new D7FrameAgentForTamer();
+		ImitationAgent agent = new ImitationAgent();
 
 
+		/*
+		 * Set some agent parameters
+		 */
+		agent.setRecordRew(false); // records predictions of human reward to file
+		agent.setRecordLog(false); // records top-level agent's full experience to log file
+		agent.envName = "Loop-Maze";	
+		agent.initParams(agent.envName);
+		
+		/*
+		 *  If you want to change some the parameters for the agent, this is a good place 
+		 *  (must be after initParams() and should be before agent_init(), which is called 
+		 *  by initExp() below)
+		 *  
+		 *  Example: agent.params.stepSize = 0.5;
+		 */
+		
 		
 		/*
 		 * Instantiate the environment
@@ -69,7 +90,7 @@ public class D7LoopMazeTamerAsModule extends TamerApplet {
 		 */
 		RunLocalExperiment.stepDurInMilliSecs = 800;
 		RLPanel.enableSpeedControls = true; // typically false for user studies
-		RLPanel.enableSingleStepControl = false; // typically false for user studies
+		RLPanel.enableSingleStepControl = true; // typically false for user studies
 		
 		/*
 		 * Initialize and start applet panel and experiment.

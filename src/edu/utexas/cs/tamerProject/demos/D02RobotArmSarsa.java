@@ -35,7 +35,7 @@ import edu.utexas.cs.tamerProject.applet.RunLocalExperiment;
  * @author bradknox
  *
  */
-public class D2RobotArmSarsa extends RLApplet {
+public class D02RobotArmSarsa extends RLApplet {
 	private static final long serialVersionUID = 672112553565074878L;
 
 	public void initPanel() {

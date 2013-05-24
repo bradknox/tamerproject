@@ -27,7 +27,7 @@ import edu.utexas.cs.tamerProject.agents.GeneralAgent;
  * @author bradknox
  *
  */
-public class D7FrameAgentForTamer extends GeneralAgent {
+public class D07FrameAgentForTamer extends GeneralAgent {
 
 	TamerAgent tamerModule = new TamerAgent();
 	

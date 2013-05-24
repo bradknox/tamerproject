@@ -41,7 +41,7 @@ import edu.utexas.cs.tamerProject.applet.TamerApplet;
  * @author bradknox
  *
  */
-public class D6LoopMazeTamerManual extends TamerApplet {
+public class D06LoopMazeTamerManual extends TamerApplet {
 	private static final long serialVersionUID = 672112553565074878L;
 
 	public void initPanel() {
