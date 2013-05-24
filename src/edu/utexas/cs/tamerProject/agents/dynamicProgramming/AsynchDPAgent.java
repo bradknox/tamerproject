@@ -203,7 +203,7 @@ public class AsynchDPAgent extends GeneralAgent {
 		/*
 		 *  Write parameters to log files
 		 */
-		this.recHandler = new RecordHandler(!isApplet);
+		this.recHandler = new RecordHandler(GeneralAgent.canWriteToFile);
     	this.writePredHRewDir = RLLIBRARY_PATH + "/data/" + this.expName; 
     	this.writePredHRewPath = writePredHRewDir + "/" + "HRew-" + this.unique
     					+ ".rew";

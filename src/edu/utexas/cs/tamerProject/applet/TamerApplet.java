@@ -36,8 +36,8 @@ public class TamerApplet extends RLApplet {
 
 	protected String trainerUnique = "testUnique";
 
-	private String savedFullLog;
-	private String savedRewLog;
+	private String savedFullLog = "";
+	private String savedRewLog = "";
 	private String filePrefix = "testExp%testUnique";
 	public static boolean isHIT = false;
 
