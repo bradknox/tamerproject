@@ -305,11 +305,11 @@ public class DPAgent extends GeneralAgent {
 
 	
 	
-	public Action agent_step(double r, Observation o, double time,
+	public Action agent_step(double r, Observation o, double startTime,
 			Action predeterminedAct) {
 //    	System.out.println("\n-----------------DPAgent step---------------\n");
 //    	System.out.println("observation: " + Arrays.toString(o.intArray));
-    	this.stepStartTime = time;
+    	this.stepStartTime = startTime;
     	this.agentStopwatch.startTimer();
     	this.stepStartHelper(r, o);
     	

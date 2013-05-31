@@ -14,17 +14,17 @@ public class EquivActionsTamerAgent extends TamerAgent {
 
 	
 		
-	    public Action agent_stepWEquiv(double r, Observation o, double time, Action predeterminedAct, 
+	    public Action agent_stepWEquiv(double r, Observation o, double startTime, Action predeterminedAct, 
 	    		Action tieBreakAction, HashMap<Action, Action> actionMap) {
 	    	//System.out.println("\n-----------------EquivActionsTamerAgent step---------------\n");
 	    	//System.out.println("Training? " + this.inTrainSess);
 	    	//System.out.println("Tamer obs: " + Arrays.toString(o.intArray));
 	    	this.checkObs(o);
 
-	    	this.stepStartTime = time;
+	    	this.stepStartTime = startTime;
 			this.stepStartHelper(r, o); // this.stepStartTime (set in stepStartHelper()) ends last step and starts new step
 			//System.out.println("TAMER this.stepStartTime: " + String.format("%f", this.stepStartTime));
-	    	this.hLearner.recordTimeStepEnd(time);
+	    	this.hLearner.recordTimeStepEnd(this.stepStartTime);
 			
 	    	/*
 	    	 * PROCESS PREVIOUS TIME STEP
@@ -32,7 +32,7 @@ public class EquivActionsTamerAgent extends TamerAgent {
 			//if (this.stepsThisEp > 1)
 				//System.out.println("Predicted human reward for last step in TAMER: " + this.getValForLastStep());
 			processPrevTimeStep(this.stepStartTime);
-			this.hLearner.processSamples(time, inTrainSess);
+			this.hLearner.processSamples(this.stepStartTime, inTrainSess);
 			
 			/*
 			 *  GET ACTION
@@ -57,7 +57,7 @@ public class EquivActionsTamerAgent extends TamerAgent {
 
 			this.stepEndHelper(r, o);
 			if (this.isTopLevelAgent) // If not top level, TamerAgent's chosen action might not be the actual action. This must be called by the primary class.
-				this.hLearner.recordTimeStepStart(this.featGen.getFeats(o, this.currObsAndAct.getAct()), time);
+				this.hLearner.recordTimeStepStart(this.featGen.getFeats(o, this.currObsAndAct.getAct()), this.stepStartTime);
 			
 			return this.currObsAndAct.getAct();
 	    }

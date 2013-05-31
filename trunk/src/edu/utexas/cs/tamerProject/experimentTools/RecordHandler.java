@@ -398,7 +398,10 @@ public class RecordHandler{
 		    out.close();
 		}
 		catch (Exception e) {
-			System.err.println("Error: " + e.getMessage() + "\nExiting.");
+			System.err.println("Error: " + e.getMessage());
+			System.err.println("Error occurred while attempting to write to " + path);
+			System.err.println("The usual cause of this error is that the directory does not exist and needs to be created manually (e.g. a \"data\" directory).");
+			System.err.println("\nExiting.");
 			e.printStackTrace();
 			System.exit(0);
 		}	   

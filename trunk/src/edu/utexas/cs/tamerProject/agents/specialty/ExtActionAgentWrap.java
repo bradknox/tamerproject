@@ -142,7 +142,7 @@ public class ExtActionAgentWrap extends GeneralAgent{
     }
     
         
-    public Action agent_step(double r, Observation o, double time, Action predeterminedAct) {
+    public Action agent_step(double r, Observation o, double startTime, Action predeterminedAct) {
     //public Action agent_step(double r, Observation o) {
     	this.rewThisExtAct += r;
     	this.currExtActI++;
@@ -150,7 +150,7 @@ public class ExtActionAgentWrap extends GeneralAgent{
     			this.callCoreAgentEveryStep) {
     		//System.out.println("this.currExtActI: " + this.currExtActI);
     		//System.out.println("asking agent for new extended action.");
-    		Action extendedAction = coreAgent.agent_step(this.rewThisExtAct, o, time, predeterminedAct);
+    		Action extendedAction = coreAgent.agent_step(this.rewThisExtAct, o, startTime, predeterminedAct);
         	this.currExtendedAction = extendedAction.intArray; //// to be more general, would need to store whole action, not just intArray
         	this.rewThisExtAct = 0;
         	this.currExtActI = 0;

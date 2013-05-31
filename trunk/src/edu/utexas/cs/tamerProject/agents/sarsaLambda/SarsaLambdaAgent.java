@@ -131,9 +131,9 @@ public class SarsaLambdaAgent extends GeneralAgent {
 
     
     
-    public Action agent_step(double r, Observation o, double time, Action predeterminedAct) {
+    public Action agent_step(double r, Observation o, double startTime, Action predeterminedAct) {
     	//System.out.println("\n-----------------Sarsa step---------------\n");
-    	this.stepStartTime = time;
+    	this.stepStartTime = startTime;
 //    	if (!this.isTopLevelAgent)
 //    		System.out.println("Apparent reward: " + r);
     	this.stepStartHelper(r, o);
