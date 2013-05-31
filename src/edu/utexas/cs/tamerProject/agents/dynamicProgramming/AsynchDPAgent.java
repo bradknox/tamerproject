@@ -388,13 +388,13 @@ public class AsynchDPAgent extends GeneralAgent {
 
 	
 	
-	public Action agent_step(double r, Observation o, double time,
+	public Action agent_step(double r, Observation o, double startTime,
 			Action predeterminedAct) {
     	System.out.println("\n-----------------AsynchDPAgent step " + this.totalSteps + "---------------\n");
     	System.out.println("observation: " + Arrays.toString(o.intArray));
     	System.out.println("reward: " + r);
     	//System.out.println("state values: " + this.stateValsToStr());
-    	this.stepStartTime = time;
+    	this.stepStartTime = startTime;
     	//synchronized(treeLock) { // to keep this.currObsAndAct from being read to create a new tree node while it's being changed
     		this.stepStartHelper(r, o);
     	//}
@@ -436,7 +436,7 @@ public class AsynchDPAgent extends GeneralAgent {
     	/*
     	 * ACTION-SPECIFIC TAMER UPDATES
     	 */
-    	this.tamerAgent.hLearner.recordTimeStepStart(this.tamerAgent.featGen.getFeats(o, this.currObsAndAct.getAct()), time); // called here b/c action was unknown at the time of tamerAgent's agent_step()
+    	this.tamerAgent.hLearner.recordTimeStepStart(this.tamerAgent.featGen.getFeats(o, this.currObsAndAct.getAct()), startTime); // called here b/c action was unknown at the time of tamerAgent's agent_step()
     	
 
 	    // TODO UPDATE with actual experience? This would complicate code with a trivial performance impact unless I use eligibility traces.

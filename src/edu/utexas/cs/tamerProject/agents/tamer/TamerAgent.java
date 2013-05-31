@@ -235,21 +235,21 @@ public class TamerAgent extends GeneralAgent implements AgentInterface {
     
     
 
-    public Action agent_step(double r, Observation o, double time, Action predeterminedAct) {
-    	return agent_step(r, o, time, predeterminedAct, this.lastObsAndAct.getAct());
+    public Action agent_step(double r, Observation o, double startTime, Action predeterminedAct) {
+    	return agent_step(r, o, startTime, predeterminedAct, this.lastObsAndAct.getAct());
     }
     
-    public Action agent_step(double r, Observation o, double time, Action predeterminedAct, Action tieBreakAction) {
+    public Action agent_step(double r, Observation o, double startTime, Action predeterminedAct, Action tieBreakAction) {
     	//System.out.println("\n-----------------Tamer step---------------\n");
     	//System.out.println("Training? " + this.inTrainSess);
     	//System.out.println("Tamer obs: " + Arrays.toString(o.intArray));
     	if (verifyObsFitsEnvDesc)
     		this.checkObs(o);
     	//System.out.println("rew list in TAMER: " + this.hRewList.toString());
-    	this.stepStartTime = time;
+    	this.stepStartTime = startTime;
 		this.stepStartHelper(r, o); // this.stepStartTime (set in stepStartHelper()) ends last step and starts new step
 		//System.out.println("TAMER this.stepStartTime: " + String.format("%f", this.stepStartTime));
-    	this.hLearner.recordTimeStepEnd(time);
+    	this.hLearner.recordTimeStepEnd(startTime);
 //    	if (this.stepsThisEp > 1)
 //    		System.out.println("Tamer feats for last obs-act: " + Arrays.toString(this.featGen.getFeats(o, this.lastObsAndAct.getAct())));
     	
@@ -259,7 +259,7 @@ public class TamerAgent extends GeneralAgent implements AgentInterface {
 //		if (this.stepsThisEp == 2)
 			//System.out.println("Predicted human reward for last step in TAMER: " + this.getVal(this.lastObsAndAct));
 		processPrevTimeStep(this.stepStartTime);
-		this.hLearner.processSamples(time, inTrainSess);
+		this.hLearner.processSamples(startTime, inTrainSess);
 		
 		/*
 		 *  GET ACTION
@@ -283,7 +283,7 @@ public class TamerAgent extends GeneralAgent implements AgentInterface {
 //			System.out.println("TAMER last action: " + this.lastAct.intArray[0]);
 		this.stepEndHelper(r, o);
 		if (this.isTopLevelAgent) // If not top level, TamerAgent's chosen action might not be the actual action. This must be called by the primary class.
-			this.hLearner.recordTimeStepStart(this.featGen.getFeats(o, this.currObsAndAct.getAct()), time);
+			this.hLearner.recordTimeStepStart(this.featGen.getFeats(o, this.currObsAndAct.getAct()), startTime);
 		
 		return this.currObsAndAct.getAct();
     }

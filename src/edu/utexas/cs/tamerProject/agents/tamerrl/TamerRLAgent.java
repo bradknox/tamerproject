@@ -346,13 +346,13 @@ public class TamerRLAgent extends GeneralAgent implements AgentInterface {
 
     
     
-    public Action agent_step(double r, Observation o, double time, Action predeterminedAct) {
+    public Action agent_step(double r, Observation o, double startTime, Action predeterminedAct) {
     	//System.out.println("---------------------------step " + this.stepsThisEp + " in ep " + this.currEpNum);
-    	this.stepStartTime = time;
+    	this.stepStartTime = startTime;
     	this.stepStartHelper(r, o);
     	//System.out.println("TAMERRL this.stepStartTime: " + String.format("%f", this.stepStartTime));
     	tamerAgent.hRewList = new ArrayList<HRew>(this.hRewThisStep);
-    	this.hInf.recordTimeStepEnd(time);
+    	this.hInf.recordTimeStepEnd(startTime);
     	
     	//if (this.stepsThisEp > 1) {
     	//	System.out.println("TamerRL lastO,lastA: " + Arrays.toString(this.lastObs.doubleArray) + Arrays.toString(this.lastAct.intArray));
@@ -394,7 +394,7 @@ public class TamerRLAgent extends GeneralAgent implements AgentInterface {
 		//this.tamerAgent.hLearner.recordTimeStep(this.tamerAgent.featGen.getFeats(o, this.action), time);
 		if (this.COMBINATION_METHOD != RL_ONLY) { // TODO make a common variable to replace this and its use above
 			this.tamerAgent.hLearner.recordTimeStepStart(this.tamerAgent.featGen.getFeats(o, 
-														this.currObsAndAct.getAct()), time); // called here b/c action was unknown at the time of tamerAgent's agent_step()
+														this.currObsAndAct.getAct()), this.stepStartTime); // called here b/c action was unknown at the time of tamerAgent's agent_step()
 		}
 
     	double manipulatedR = this.getManipulatedRew(r, o);
@@ -403,7 +403,7 @@ public class TamerRLAgent extends GeneralAgent implements AgentInterface {
     	 * RL update
     	 */
     	if (this.stepsThisEp > 1){
-    		this.rlAgent.agent_step(manipulatedR, o, time, this.currObsAndAct.getAct());
+    		this.rlAgent.agent_step(manipulatedR, o, this.stepStartTime, this.currObsAndAct.getAct());
     		//this.overwriteLastObsAndAct(this.rlAgent); TODO remove
     	}
     	//    	this.hInf.recordTimeStep(o, this.action, this.stepStartTime); // out-of-date way of recording time step; eventually delete this line
@@ -416,7 +416,7 @@ public class TamerRLAgent extends GeneralAgent implements AgentInterface {
 //    	if (this.lastAct != null)
 //			System.out.println("TAMERRL last action: " + this.lastAct.intArray[0]);
     	this.stepEndHelper(r, o);
-		this.hInf.recordTimeStepStart(o, this.currObsAndAct.getAct(), time);
+		this.hInf.recordTimeStepStart(o, this.currObsAndAct.getAct(), this.stepStartTime);
         return this.currObsAndAct.getAct();
     }
 

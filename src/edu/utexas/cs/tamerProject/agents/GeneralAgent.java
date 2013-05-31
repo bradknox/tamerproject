@@ -634,11 +634,11 @@ public abstract class GeneralAgent implements AgentInterface{
     	return this.agent_step(r, o, Stopwatch.getComparableTimeInSec());
     }
     
-    public Action agent_step(double r, Observation o, double time){
+    public Action agent_step(double r, Observation o, double startTime){
     	return this.agent_step(r, o, Stopwatch.getComparableTimeInSec(), null);
     }
     
-    public abstract Action agent_step(double r, Observation o, double time, Action predeterminedAct);
+    public abstract Action agent_step(double r, Observation o, double startTime, Action predeterminedAct);
     
     protected void stepStartHelper(double r, Observation o){
     	this.totalSteps++;

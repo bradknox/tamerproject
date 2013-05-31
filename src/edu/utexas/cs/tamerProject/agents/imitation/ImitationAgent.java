@@ -193,8 +193,8 @@ public class ImitationAgent extends TamerAgent{
 		this.endInitHelper();
 	}
 
-    public Action agent_step(double r, Observation o, double time, Action predeterminedAct) {
-    	this.stepStartTime = time;
+    public Action agent_step(double r, Observation o, double startTime, Action predeterminedAct) {
+    	this.stepStartTime = startTime;
 		//// GET BORDER TIME (ends last step and starts new step)
 		this.stepStartHelper(r, o);
         //if (this.stepsThisEp % 500 == 0)

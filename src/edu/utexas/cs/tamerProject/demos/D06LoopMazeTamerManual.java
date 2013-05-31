@@ -12,6 +12,7 @@ import edu.utexas.cs.tamerProject.featGen.FeatGen_RBFs;
 import edu.utexas.cs.tamerProject.featGen.FeatGenerator;
 import edu.utexas.cs.tamerProject.modeling.IncGDLinearModel;
 import edu.utexas.cs.tamerProject.modeling.templates.RegressionModel;
+import edu.utexas.cs.tamerProject.utils.MutableDouble;
 
 import org.rlcommunity.rlglue.codec.AgentInterface;
 import org.rlcommunity.rlglue.codec.EnvironmentInterface;
@@ -110,6 +111,11 @@ public class D06LoopMazeTamerManual extends TamerApplet {
 				agent.featGen, agent.params.initWtsValue, 
 				agent.params.modelAddsBiasFeat); 
 		agent.model = model;
+		
+		double agentDiscountFactor = 0; //always 0 for TAMER
+		((IncGDLinearModel)agent.model).setEligTraceParams(agent.params.traceDecayFactor, 
+				new MutableDouble(agentDiscountFactor),
+				agent.params.traceType);
 		
 		if (agent.params.initModelWSamples)
 			agent.model.biasWGenSamples(agent.params.numBiasingSamples, agent.params.initSampleValue, 
