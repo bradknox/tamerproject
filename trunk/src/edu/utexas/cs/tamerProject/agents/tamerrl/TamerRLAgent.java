@@ -519,8 +519,8 @@ public class TamerRLAgent extends GeneralAgent implements AgentInterface {
 	private void loadPyMCWts() {
 		// load model weights from AAMAS-2010 TAMER+RL experiments; H1, the middling performer, has hNum 1; top performer H2 has hNum 2
 		System.out.println("\nLoading H-hat_{" + this.H_NUM + "} from AAMAS-10 TAMER+RL Mountain Car experiments. ");
-		String[] wtsPath = {RecordHandler.getPresentWorkingDir().replace("/bin", "") + "/data/mc_tamer/models/juhyun-1228942397.86-100.model", 
-				RecordHandler.getPresentWorkingDir().replace("/bin", "") + "/data/mc_tamer/models/ikarpov-1228858017.78-100.model"};
+		String[] wtsPath = {RecordHandler.getPresentWorkingDir().replace("/bin", "") + "/src/edu/utexas/cs/tamerProject/agents/tamerrl/models/H1-100.model", 
+				RecordHandler.getPresentWorkingDir().replace("/bin", "") + "/src/edu/utexas/cs/tamerProject/agents/tamerrl/models/H2-100.model"};
 		double[] wtsArray = null;
 		try{ 
 			String wtsStr = RecordHandler.getStrArray(wtsPath[this.H_NUM - 1])[0];
