@@ -272,12 +272,8 @@ public class ToyExp {
 		//args[3] = "indivAlways";
 		//args[3] = "indivRewOnly";
 		args[4] = "";//-trainLogPath";
-		//args[5] = RecordHandler.getPresentWorkingDir().replace("/bin", "") + "/data/mc_tamer/recTraj-ikarpov-1228858017.78.log";		
-		//args[5] = RecordHandler.getPresentWorkingDir().replace("/bin", "") + "/data/mc_tamer/all/recTraj-juhyun-1228942397.86.log";
-		args[5] = RecordHandler.getPresentWorkingDir().replace("/bin", "") + "/data/mc_tamer/all/recTraj-Mazda-1228942509.49.log";
-		//args[5] = RecordHandler.getPresentWorkingDir().replace("/bin", "") + "/data/mc_tamer/all/recTraj-pbeeson-1228857250.99.log";
-		//args[5] = RecordHandler.getPresentWorkingDir().replace("/bin", "") + "/data/mc_tamer/all/recTraj-jacob-1228939181.07.log";
-		//args[5] = RecordHandler.getPresentWorkingDir().replace("/bin", "") + "/data/mc_tamer/all/recTraj-aniket-1228943184.94.log";
+		args[5] = RecordHandler.getPresentWorkingDir().replace("/bin", "") + "/src/edu/utexas/cs/tamerProject/agents/tamerrl/models/recTraj-H2.log";		
+		//args[5] = RecordHandler.getPresentWorkingDir().replace("/bin", "") + "/src/edu/utexas/cs/tamerProject/agents/tamerrl/models/recTraj-H1.log";
 		args[6] = "-expName";
 		args[7] = "test";
 		args[8] = "-trainEpLimit";

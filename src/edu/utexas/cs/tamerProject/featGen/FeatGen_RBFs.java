@@ -23,6 +23,7 @@ import org.rlcommunity.rlglue.codec.types.Observation;
 import edu.utexas.cs.tamerProject.experimentTools.RecordHandler;
 import edu.utexas.cs.tamerProject.featGen.FeatGenerator;
 import edu.utexas.cs.tamerProject.modeling.templates.RegressionModel;
+import edu.utexas.cs.tamerProject.utils.SimpleStats;
 import edu.utexas.cs.tamerProject.utils.Stopwatch;
 
 public class FeatGen_RBFs extends FeatGenerator{
@@ -387,7 +388,7 @@ public class FeatGen_RBFs extends FeatGenerator{
 		System.out.println("\n\nPython TAMER's Mountain car features and model test");
 		
 		// load model weights
-		String wtsPath = "/Users/bradknox/projects/rl-library-data/mc_tamer/models/ikarpov-1228858017.78-100.model";
+		String wtsPath = RecordHandler.getPresentWorkingDir().replace("/bin", "") + "/src/edu/utexas/cs/tamerProject/agents/tamerrl/models/H2-100.model";
 		double[] wtsArray = null;
 		try{ 
 			String wtsStr = RecordHandler.getStrArray(wtsPath)[0];
@@ -395,11 +396,11 @@ public class FeatGen_RBFs extends FeatGenerator{
 		}
 		catch (Exception e){
 			System.err.println("Error: " + e.getMessage() + "\nExiting.");
-			System.err.println(Arrays.toString(Thread.currentThread().getStackTrace()));
-			System.exit(0); }
+			System.err.println(Arrays.toString(e.getStackTrace()));
+			System.exit(1); }
 		
 		System.out.println("\nLoading saved features from Python code for comparison.");
-		String pyFeatsPath = "/Users/bradknox/projects/rl-library-data/mc_tamer/models/feats.python";
+		String pyFeatsPath = RecordHandler.getPresentWorkingDir().replace("/bin", "") + "/src/edu/utexas/cs/tamerProject/agents/tamerrl/models/feats.python";
 		double[] pyFeatsArray = null;
 		try{ 
 			String pyFeatsStr = RecordHandler.getStrArray(pyFeatsPath)[0];
@@ -463,8 +464,8 @@ public class FeatGen_RBFs extends FeatGenerator{
 		// second test of model output
 		modelOut = 0;
 		for (int i = 0; i < wtsArray.length; i++) {	
-			if (!FeatGen_RBFs.areAlmostTheSame(feats[i], pyFeatsArray[i])) {
-				System.out.println("Mistmatch at index " + i + ". Python: " + pyFeatsArray[i] + ". Java: " + feats[i]);
+			if (!SimpleStats.areAlmostTheSame(feats[i], pyFeatsArray[i])) {
+				System.out.println("Mismatch at index " + i + ". Python: " + pyFeatsArray[i] + ". Java: " + feats[i]);
 			}
 			modelOut += feats[i] * wtsArray[i];
 		}
@@ -473,28 +474,8 @@ public class FeatGen_RBFs extends FeatGenerator{
 		
 	}
 	
-	private static boolean areAlmostTheSame(double a, double b) {
-		if (b == 0) {
-			if (a == 0)
-				return true;
-			else
-				return false;
-		}
-		double quotient = a / b;
-		double diffMetric = Math.abs(quotient - 1);
-		if (diffMetric < 0.0001)
-			return true;
-		else
-			return false;
-		
-	}
-	
-//	public static double exp(double x) {
-//		x = 1f + x / 256f;
-//		x *= x; x *= x; x *= x; x *= x;
-//		x *= x; x *= x; x *= x; x *= x;
-//		return x;
-//	}
+
+
 	
 	/**
 	 * This fast approximation of the exponential function is from an 

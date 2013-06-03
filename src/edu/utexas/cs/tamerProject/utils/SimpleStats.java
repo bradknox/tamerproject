@@ -24,6 +24,24 @@ public class SimpleStats {
 	}
 	
 	
+	
+	public static boolean areAlmostTheSame(double a, double b) {
+		if (b == 0) {
+			if (a == 0)
+				return true;
+			else
+				return false;
+		}
+		double quotient = a / b;
+		double diffMetric = Math.abs(quotient - 1);
+		if (diffMetric < 0.0001)
+			return true;
+		else
+			return false;
+		
+	}
+	
+	
 	public static void main(String[] args) {
 		double[] testNums = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 		double externallyCalcedStErr = 0.912870929175;
