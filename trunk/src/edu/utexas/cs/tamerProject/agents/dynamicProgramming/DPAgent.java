@@ -47,6 +47,7 @@ import edu.utexas.cs.tamerProject.utils.Stopwatch;
 public class DPAgent extends GeneralAgent {
 
 	
+	public boolean AUTOSTART_DPTHREAD = true;
 	public TamerAgent tamerAgent;
 	public EnvTransModel envTransModel;
 	protected ObsActModel rewModel;
@@ -213,7 +214,9 @@ public class DPAgent extends GeneralAgent {
 		/*
 		 * Start dynamic programming thread
 		 */
-		createDPUpdateThread();
+		if (AUTOSTART_DPTHREAD) {
+			createDPUpdateThread();			
+		}
 		
 		this.endInitHelper();
 	}
