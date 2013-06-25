@@ -5,6 +5,8 @@ package edu.utexas.cs.tamerProject.modeling.weka;
 import weka.core.Instance;
 import weka.core.FastVector;
 import weka.core.Attribute;
+import weka.core.Utils;
+import weka.classifiers.Classifier;
 import weka.classifiers.trees.J48;
 import weka.classifiers.trees.M5P;
 import weka.classifiers.lazy.IBk;
@@ -100,6 +102,15 @@ public class WekaRegressor extends WekaModel implements Externalizable{ //Serial
         		LinearRegression linRegrModel = new LinearRegression();
         		linRegrModel.setOptions(linRegrOpts);
         		this.classifiers.add(linRegrModel);
+        	}
+        	else { // e.g., modelName = "weka.classifiers.functions.Logistic -R 1"; use this for more direct control of weka options
+        		String[] tmpOptions;
+        		String classname;
+        		tmpOptions     = Utils.splitOptions(modelName);
+        		classname      = tmpOptions[0];
+        		tmpOptions[0]  = "";
+        		Classifier cls = (Classifier) Utils.forName(Classifier.class, classname, tmpOptions);
+        		this.classifiers.add(cls);
         	}
         	
             //String[] optsIBk = {"-X", "-I"};

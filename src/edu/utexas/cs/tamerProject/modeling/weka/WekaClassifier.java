@@ -5,6 +5,8 @@ package edu.utexas.cs.tamerProject.modeling.weka;
 import weka.core.Instance;
 import weka.core.FastVector;
 import weka.core.Attribute;
+import weka.core.Utils;
+import weka.classifiers.Classifier;
 import weka.classifiers.functions.Logistic;
 import weka.attributeSelection.GreedyStepwise;
 import weka.attributeSelection.WrapperSubsetEval;
@@ -57,8 +59,25 @@ public class WekaClassifier extends WekaModel {
 		this.modelName = modelName;
         try{
         	lowImportancePrint("Given model name: " + modelName);
-        	if (modelName.equals("") || modelName.equals("Logistic"))
-        		this.classifiers.add(new Logistic()); 
+        	if (modelName.equals("")) {
+        		modelName = "weka.classifiers.functions.Logistic -R 1";
+        	}
+        	
+        	
+        	if (modelName.contains("Logistic")) {
+	    		Logistic logRegr = new Logistic();
+	    		this.classifiers.add(logRegr);
+        	}
+        	else{
+	    		String[] tmpOptions;
+	    		String classname;
+	    		tmpOptions     = Utils.splitOptions(modelName);
+	    		classname      = tmpOptions[0];
+	    		tmpOptions[0]  = "";
+	    		Classifier cls = (Classifier) Utils.forName(Classifier.class, classname, tmpOptions);
+	    		this.classifiers.add(cls);
+        	}
+
 
 
         	AttributeSelectedClassifier attrSelClassifier = new AttributeSelectedClassifier();

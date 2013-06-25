@@ -159,7 +159,10 @@ public class DPAgent extends GeneralAgent {
     	/*
     	 * INITIALIZE EnvTransModel
     	 */
-//    	if (this.envTransModel == null)
+    	if (this.envTransModel == null) {
+    		System.err.println("envTransModel in DPAgent has not been set. Call setEnvTransModel() before agent_init().");
+    		System.exit(1);  		
+    	}
 //    		this.envTransModel = new LoopMazeTransModel();
     	
     	/*
