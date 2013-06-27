@@ -20,11 +20,13 @@ import edu.utexas.cs.tamerProject.envModels.EnvTransModel;
 import edu.utexas.cs.tamerProject.envModels.rewModels.LoopMazeRewModel;
 import edu.utexas.cs.tamerProject.envModels.transModels.LoopMazeTransModel;
 import edu.utexas.cs.tamerProject.experimentTools.RecordHandler;
+import edu.utexas.cs.tamerProject.featGen.FeatGen_DiscreteIndexer;
 import edu.utexas.cs.tamerProject.featGen.FeatGen_Discretize;
 import edu.utexas.cs.tamerProject.featGen.FeatGen_NoChange;
 import edu.utexas.cs.tamerProject.featGen.FeatGenerator;
 import edu.utexas.cs.tamerProject.modeling.IncGDLinearModel;
 import edu.utexas.cs.tamerProject.modeling.Sample;
+import edu.utexas.cs.tamerProject.modeling.TabularModel;
 import edu.utexas.cs.tamerProject.modeling.templates.ObsActModel;
 import edu.utexas.cs.tamerProject.modeling.templates.RegressionModel;
 import edu.utexas.cs.tamerProject.utils.Stopwatch;
@@ -120,25 +122,46 @@ public class DPAgent extends GeneralAgent {
     	startInitHelper(taskSpec); 
     	this.agentStopwatch.startTimer();
     	
+    	
 		/*
-		 * INITIALIZE FeatGenerator for state value function (no action input)
+		 * INITIALIZE FeatGenerator for state value function (no action input) TODO change to general feat gen
 		 */
-    	int[][] singleActIntRanges = {{0,0}};
-    	this.featGen = new FeatGen_Discretize(this.theObsIntRanges, this.theObsDoubleRanges, 
-				singleActIntRanges, this.theActDoubleRanges, 
-				Integer.valueOf(params.featGenParams.get("numBinsPerDim")));
+    	FeatGen_DiscreteIndexer discIndFeatGen = new FeatGen_DiscreteIndexer(this.theObsIntRanges, this.theObsDoubleRanges, 
+				this.theActIntRanges, this.theActDoubleRanges);
+    	this.featGen = discIndFeatGen;
+    	if (!this.params.featClass.equals("FeatGen_DiscreteIndexer") && !this.params.featClass.equals("None")) {
+    		System.err.println("DPAgent hard-codes FeatGenerator child class to be FeatGen_DiscreteIndexer, but the agent params ask for something else (" + this.params.featClass.toString() + ").");
+    		System.exit(1);
+    	}
+
 		dummyActForFeats = new Action();
 		int[] dummyIntArray = {0};
 		dummyActForFeats.intArray = dummyIntArray;
 		dummyActForFeats.doubleArray = new double[0];
-
+    	
 		/*
-		 * INITIALIZE RegressionModel - step size of 1 for DP
+		 * INITIALIZE RegressionModel
 		 */
-    	this.model = new IncGDLinearModel(this.featGen.getNumFeatures(), 1.0, 
-				this.featGen, this.params.initWtsValue, 
-				this.params.modelAddsBiasFeat);
-    	((IncGDLinearModel)this.model).setDiscountFactor(0);
+    	this.model = new TabularModel(1.0, 
+				discIndFeatGen, this.params.initWtsValue);
+//    	
+//    	
+//		/*
+//		 * INITIALIZE FeatGenerator for state value function (no action input)
+//		 */
+//    	int[][] singleActIntRanges = {{0,0}};
+//    	this.featGen = new FeatGen_Discretize(this.theObsIntRanges, this.theObsDoubleRanges, 
+//				singleActIntRanges, this.theActDoubleRanges, 
+//				Integer.valueOf(params.featGenParams.get("numBinsPerDim")));
+
+//
+//		/*
+//		 * INITIALIZE RegressionModel - step size of 1 for DP
+//		 */
+//    	this.model = new IncGDLinearModel(this.featGen.getNumFeatures(), 1.0, 
+//				this.featGen, this.params.initWtsValue, 
+//				this.params.modelAddsBiasFeat);
+//    	((IncGDLinearModel)this.model).setDiscountFactor(0);
     	
     	
 
