@@ -136,7 +136,7 @@ public class AsynchDPAgent extends GeneralAgent {
     	FeatGen_DiscreteIndexer discIndFeatGen = new FeatGen_DiscreteIndexer(this.theObsIntRanges, this.theObsDoubleRanges, 
 				this.theActIntRanges, this.theActDoubleRanges);
     	this.featGen = discIndFeatGen;
-    	if (!this.params.featClass.equals("FeatGen_DiscreteIndexer")) {
+    	if (!this.params.featClass.equals("FeatGen_DiscreteIndexer") && !this.params.featClass.equals("None")) {
     		System.err.println("AsynchDPAgent hard-codes FeatGenerator child class to be FeatGen_DiscreteIndexer, but the agent params ask for something else (" + this.params.featClass.toString() + ").");
     		System.exit(1);
     	}
