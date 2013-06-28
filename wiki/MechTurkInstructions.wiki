@@ -8,11 +8,6 @@ Running a Turk study (or just generally getting data through the web) is fairly 
 
 = Details =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
-
 ===1. Create a class that extends RLApplet (for display of the agent-environment interaction only) or TamerApplet (for human interaction with the agent).===
 
 ===2. Pack the code (this project plus your additions) into a jar file.===
