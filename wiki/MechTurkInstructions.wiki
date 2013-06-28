@@ -21,7 +21,7 @@ In Eclipse, this can be done as follows. First, right-click on the project your 
 
 ===3. Place the jar file on a publicly readable web server.===
 
-===4. Write html that creates the applet from the intended class.===
+===4. Write html code that creates the applet from the intended class.===
 
 *Example:*
 {{{
