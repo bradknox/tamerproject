@@ -23,6 +23,41 @@ In Eclipse, this can be done as follows. First, right-click on the project your 
 
 ===4. Write html that creates the applet from the intended class.===
 
+*Example:*
+{{{
+<table>
+<tr> <td bgcolor="black">
+<applet code="edu.utexas.cs.tamerProject.applet.TamerApplet.class"
+        archive="http://www.cs.utexas.edu/~bradknox/turk/rl-applet.jar"
+        width=600 height=600>
+  <PARAM name="classloader_cache" value="false">
+  <PARAM name="separate_jvm" value="true">
+  <!--<param name="identifier" value="${hit_id}">-->
+  <param name="domain" value="loopmaze">
+  <param name="agent" value="control">
+  <param name="isHIT" value="true">
+  <param name="numInTaskSeq" value="1">
+  <param name="fullLog" value="true">
+  <param name="rewLog" value="true">
+  <param name="numEpisodes" value="3">
+  <!-- <param name="maxTotalSteps" value="40"> -->
+  <param name="speedControls" value="false">
+  <param name="singleStepControl" value="false">
+  <param name="speed" value="300">
+  <!--<param name="timeRequirement" value="85">-->
+  <param name="trainingControl" value="false">
+</applet>
+</td>
+<td width="500">
+<font face="Courier" size="3"><b>
+<b>To play the game, move Kermitbot to water with the arrow keys.</b>
+<br><br>
+<font color="992222"><b>***The game window only receives your keystrokes once you have double-clicked on it.***</b></font>
+</font>
+</td> </tr>
+</table>
+}}}
+
 ===5. Create a Turk task that uses this html (either directly loading your applet or by linking to your website, where the applet would be).===
 ===6. Set up a data collection method that sends log information from participants' computers to your server.===
  
