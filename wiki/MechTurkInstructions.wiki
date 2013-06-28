@@ -13,11 +13,11 @@ Add your content here.  Format your content with:
   * Headings, paragraphs, and lists
   * Automatic links to other wiki pages
 
-  # Create a class that extends RLApplet (for display of the agent-environment interaction only) or TamerApplet (for human interaction with the agent).
+===Create a class that extends RLApplet (for display of the agent-environment interaction only) or TamerApplet (for human interaction with the agent).===
 
 ddf
 
-  # Pack the code (this project plus your additions) into a jar file.
+ ==Pack the code (this project plus your additions) into a jar file.==
   # Place the jar file on a publicly readable web server.
   # Write html that creates the applet from the intended class.
   # Create a Turk task that uses this html (either directly loading your applet or by linking to your website, where the applet would be).
