@@ -2,8 +2,8 @@
 
 = Introduction =
 
-The high-level steps:
-*
+Running a Turk study (or just generally getting data through the web) is fairly easy with this code. You need to create an applet and put it on the web, set up data collection, and then have people interact with the applet on their computers. Below are instructions for running a study by Mechanical Turk; the instructions can easily be adapted for other data-gathering methods.
+
 
 
 = Details =
@@ -12,3 +12,12 @@ Add your content here.  Format your content with:
   * Text in *bold* or _italic_
   * Headings, paragraphs, and lists
   * Automatic links to other wiki pages
+
+The high-level steps:
+# Create a class that extends RLApplet (for display of the agent-environment interaction only) or TamerApplet (for human interaction with the agent).
+# Pack the code (this project plus your additions) into a jar file.
+# Place the jar file on a publicly readable web server.
+# Write html that creates the applet from the intended class.
+# Create a Turk task that uses this html (either directly loading your applet or by linking to your website, where the applet would be).
+# Set up a data collection method that sends log information from participants' computers to your server.
+#  
