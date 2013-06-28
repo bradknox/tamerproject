@@ -14,10 +14,10 @@ Add your content here.  Format your content with:
   * Automatic links to other wiki pages
 
 The high-level steps:
-# Create a class that extends RLApplet (for display of the agent-environment interaction only) or TamerApplet (for human interaction with the agent).
-# Pack the code (this project plus your additions) into a jar file.
-# Place the jar file on a publicly readable web server.
-# Write html that creates the applet from the intended class.
-# Create a Turk task that uses this html (either directly loading your applet or by linking to your website, where the applet would be).
-# Set up a data collection method that sends log information from participants' computers to your server.
-#  
+  # Create a class that extends RLApplet (for display of the agent-environment interaction only) or TamerApplet (for human interaction with the agent).
+  # Pack the code (this project plus your additions) into a jar file.
+  # Place the jar file on a publicly readable web server.
+  # Write html that creates the applet from the intended class.
+  # Create a Turk task that uses this html (either directly loading your applet or by linking to your website, where the applet would be).
+  # Set up a data collection method that sends log information from participants' computers to your server.
+  #  
