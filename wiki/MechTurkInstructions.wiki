@@ -17,7 +17,7 @@ Add your content here.  Format your content with:
 
 ===2. Pack the code (this project plus your additions) into a jar file.===
 
-In Eclipse, this can be done as follows. First, right-click on the project your class file is in and choose Export. Then choose Jar file and click Next. In the Jar Export window, choose a file name and location. I'll assume tamer.jar is the name. Then you should be able to use the default settings and click Finish.
+In Eclipse, this can be done as follows. First, right-click on the project your class file is in and choose Export. Then choose Jar file and click Next. In the Jar Export window, choose a file name and location. I'll assume tamer.jar is the name in the steps below. Then you should be able to use the default settings and click Finish.
 
 ===3. Place the jar file on a publicly readable web server.===
 
@@ -28,7 +28,7 @@ In Eclipse, this can be done as follows. First, right-click on the project your 
 <table>
 <tr> <td bgcolor="black">
 <applet code="edu.utexas.cs.tamerProject.applet.TamerApplet.class"
-        archive="http://www.cs.utexas.edu/~bradknox/turk/rl-applet.jar"
+        archive="<URL here>/tamer.jar"
         width=600 height=600>
   <PARAM name="classloader_cache" value="false">
   <PARAM name="separate_jvm" value="true">
@@ -59,5 +59,12 @@ In Eclipse, this can be done as follows. First, right-click on the project your 
 }}}
 
 ===5. Create a Turk task that uses this html (either directly loading your applet or by linking to your website, where the applet would be).===
+
 ===6. Set up a data collection method that sends log information from participants' computers to your server.===
+
+This codebase already has support for sending log data to a server running PHP. See RLApplet's method sendStringToPHP(). I'm happy to share that PHP code if you're interested.  
+
+===7. Run the Turk task.===
+
+Instructions for being a "requester" on Mechanical Turk are available across the web, including on their site.
  
