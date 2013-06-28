@@ -15,9 +15,14 @@ Add your content here.  Format your content with:
 
 ===1. Create a class that extends RLApplet (for display of the agent-environment interaction only) or TamerApplet (for human interaction with the agent).===
 
-===Pack the code (this project plus your additions) into a jar file.===
-===Place the jar file on a publicly readable web server.===
-===Write html that creates the applet from the intended class.===
-===Create a Turk task that uses this html (either directly loading your applet or by linking to your website, where the applet would be).===
-===Set up a data collection method that sends log information from participants' computers to your server.===
+===2. Pack the code (this project plus your additions) into a jar file.===
+
+In Eclipse, this can be done as follows. First, right-click on the project your class file is in and choose Export. Then choose Jar file and click Next. In the Jar Export window, choose a file name and location. I'll assume tamer.jar is the name. Then you should be able to use the default settings and click Finish.
+
+===3. Place the jar file on a publicly readable web server.===
+
+===4. Write html that creates the applet from the intended class.===
+
+===5. Create a Turk task that uses this html (either directly loading your applet or by linking to your website, where the applet would be).===
+===6. Set up a data collection method that sends log information from participants' computers to your server.===
  
