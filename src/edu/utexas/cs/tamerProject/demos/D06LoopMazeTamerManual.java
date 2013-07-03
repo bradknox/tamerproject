@@ -38,6 +38,10 @@ import edu.utexas.cs.tamerProject.applet.TamerApplet;
  * or modeling classes, this class provides a simple demonstration of how
  * you would use your classes instead.
  * 
+ * If you create a new environment, you'll need to set various parameters
+ * of the agent manually, as is done below. The Params class has numerous
+ * parameters that are set according to the agent's envName variable, so 
+ * new environments (with new names) simply use default values.
  * 
  * @author bradknox
  *
@@ -131,7 +135,18 @@ public class D06LoopMazeTamerManual extends TamerApplet {
 		 *  
 		 *  Example: agent.params.stepSize = 0.5;
 		 */
+		agent.params.modelClass = "IncGDLinearModel";
+		agent.params.featClass = "FeatGen_RBFs";
+		agent.params.featGenParams.put("basisFcnsPerDim", "6");
+		agent.params.featGenParams.put("relWidth", "0.05");
+		agent.params.stepSize = 0.2;
+		agent.params.featGenParams.put("biasFeatVal", "0.1");
 		
+		// credit assignment parameters
+		agent.params.distClass = "uniform"; //// immediate, previousStep, or uniform
+		agent.params.creditDelay = 0.15; // these bounds are because the typical event being reward is the action shown at the beginning of the step
+		agent.params.windowSize = 0.25;
+		agent.params.extrapolateFutureRew = false;
 
 		
 		

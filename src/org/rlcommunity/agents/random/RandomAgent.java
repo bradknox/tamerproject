@@ -125,7 +125,7 @@ public class RandomAgent implements AgentInterface, HasImageInterface {
         return action;
     }
 
-    public Action agent_step(double arg0, Observation o) {
+    public Action agent_step(double reward, Observation o) {
         setRandomActions(action);
         return action;
     }

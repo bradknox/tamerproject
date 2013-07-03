@@ -48,6 +48,9 @@ public class RLApplet extends JApplet
 	public static boolean DEBUG_TIME = false; // keep false as default
 	public static boolean IN_BROWSER = true;
 	
+	public URL dataCollectURL = null; //new URL("http://... <point to the location of tamer.php without including the file "tamer.php" itself in the URL>");
+	//new URL("http://...www.cs.utexas.edu/~bradknox/turk/");
+	
 	public void init() {
 		super.init();
 		RunLocalExperiment.isApplet = true;
@@ -148,69 +151,75 @@ public class RLApplet extends JApplet
 	
 	
 	
-	
+//	/**
+//	 * Send the inputField data to the servlet and show the result in the outputField. 
+//	 * 
+//	 * Please note that servlet-based data collection was never fully implemented. I
+//	 * don't remember the state of this implementation, but it did not work for me
+//	 * (maybe only because of security restrictions).
+//	 */
+//	protected void sendStringToServlet(String msg) {
+//		try {
+//			// send string to the servlet
+//			URLConnection con = getServletConnection();
+//			OutputStream outstream = con.getOutputStream();
+//			ObjectOutputStream oos = new ObjectOutputStream(outstream);
+//			oos.writeObject(msg.replace(' ', '%'));
+//			oos.flush();
+//			oos.close();
+//
+//			// receive response from servlet
+//			InputStream instr = con.getInputStream();
+//			ObjectInputStream inputFromServlet = new ObjectInputStream(instr);
+//			String result = (String) inputFromServlet.readObject();
+//			inputFromServlet.close();
+//			instr.close();
+//			System.out.println("\n\nServlet says " + result); // show servlet response
+//
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
 
-	/**
-	 * Get a connection to the servlet.
-	 */
-	private URLConnection getServletConnection()
-		throws MalformedURLException, IOException {
+//	/**
+//	 * Get a connection to the servlet.
+//	 */
+//	private URLConnection getServletConnection()
+//		throws MalformedURLException, IOException {
+//
+//		// Connect to Servlet
+//		URL urlServlet = new URL(getCodeBase(), "AppletLogger");
+//		URLConnection con = urlServlet.openConnection();
+//
+//		// Configuration
+//		con.setDoInput(true);
+//		con.setDoOutput(true);
+//		con.setUseCaches(false);
+//		con.setRequestProperty(
+//			"Content-Type",
+//			"application/x-java-serialized-object");
+//
+//		return con;
+//	}
+//	
 
-		// Connect to Servlet
-		URL urlServlet = new URL(getCodeBase(), "AppletLogger");
-		URLConnection con = urlServlet.openConnection();
-
-		// Configuration
-		con.setDoInput(true);
-		con.setDoOutput(true);
-		con.setUseCaches(false);
-		con.setRequestProperty(
-			"Content-Type",
-			"application/x-java-serialized-object");
-
-		return con;
-	}
-	
-	/**
-	 * Send the inputField data to the servlet and show the result in the outputField.
-	 */
-	protected void sendStringToServlet(String msg) {
-		try {
-			// send string to the servlet
-			URLConnection con = getServletConnection();
-			OutputStream outstream = con.getOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(outstream);
-			oos.writeObject(msg.replace(' ', '%'));
-			oos.flush();
-			oos.close();
-
-			// receive response from servlet
-			InputStream instr = con.getInputStream();
-			ObjectInputStream inputFromServlet = new ObjectInputStream(instr);
-			String result = (String) inputFromServlet.readObject();
-			inputFromServlet.close();
-			instr.close();
-			System.out.println("\n\nServlet says " + result); // show servlet response
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	
 	/**
 	 * Send the input string to PHP
 	 */
 	protected String sendStringToPHP(String msg) {
+		if (dataCollectURL == null) {
+			System.err.println("Attempting to send data to a server via PHP in RLApplet.sendStringToPHP()." +
+					" However, no server URL has been set. Either turn off data collection or set " +
+					"dataCollectURL in RLApplet.");
+		}
 		String response = "";
 		try {
-			//msg = msg.replace(" ", "%20");
 			msg = URLEncoder.encode(msg, "UTF-8");
 			System.out.println("message size: " + msg.length());
 			String urlAddition = "tamer.php?tamerStr=" + msg;
 			System.out.println("sending " + urlAddition);
-//			URL url = new URL(getCodeBase(), urlAddition);
-			URL base = new URL("http://www.cs.utexas.edu/~bradknox/turk/");
-			URL url = new URL(base, urlAddition);
+			URL url = new URL(dataCollectURL, urlAddition);
 			URLConnection con = url.openConnection();
 
 			con.setDoInput(true);

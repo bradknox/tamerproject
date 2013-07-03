@@ -57,13 +57,14 @@ public class HLearner {
 		this.credA.recordTimeStepEnd(endTime);
 	}
 	
-	public void processSamples(double currTime, boolean inTrainSess) {
+	public Sample[] processSamples(double currTime, boolean inTrainSess) {
 		//System.out.print("\n\nHLearner processSamples()");
 		Sample[] samples = this.credA.processSamplesAndRemoveFinished(currTime, inTrainSess);
 		//if (samples.length > 0)
 		//	System.out.println("Adding " + samples.length + " samples.");
 		if (samples.length > 0)
 			addSamplesAndBuild(samples);
+		return samples;
 	}
 	
 	public void clearHistory(){
