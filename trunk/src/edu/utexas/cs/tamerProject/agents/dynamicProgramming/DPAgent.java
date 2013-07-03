@@ -145,7 +145,7 @@ public class DPAgent extends GeneralAgent {
     	this.model = new TabularModel(1.0, 
 				discIndFeatGen, this.params.initWtsValue);
 //    	
-//    	
+//    	TODO remove later
 //		/*
 //		 * INITIALIZE FeatGenerator for state value function (no action input)
 //		 */

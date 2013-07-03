@@ -29,6 +29,7 @@ import edu.utexas.cs.tamerProject.actSelect.ActionSelect;
 import edu.utexas.cs.tamerProject.agents.CreditAssignParamVec;
 import edu.utexas.cs.tamerProject.agents.GeneralAgent;
 import edu.utexas.cs.tamerProject.agents.HLearner;
+import edu.utexas.cs.tamerProject.modeling.Sample;
 import edu.utexas.cs.tamerProject.trainInterface.TrainerListener;
 import edu.utexas.cs.tamerProject.utils.Stopwatch;
 
@@ -57,126 +58,11 @@ public class TamerAgent extends GeneralAgent implements AgentInterface {
 	 *  instead through its static variable PAUSE_DUR_AFTER_EP. ****
 	 */
 	public int EP_END_PAUSE = 0; //2000; /
+	private Sample[] lastLearningSamples;
 	public static boolean verifyObsFitsEnvDesc = true;
 	
 	
-    public static void main(String[] args){
-    	TamerAgent agent = new TamerAgent();
-    	agent.processPreInitArgs(args);
-    	if (agent.glue) {
-        	AgentLoader L=new AgentLoader(agent);
-        	L.run();
-    	}
-    	else {
-    		agent.runSelf();
-    	}
-    }  
-    
-	public void processPreInitArgs(String[] args) {
-		System.out.println("\n[------Tamer process pre-init args------] " + Arrays.toString(args));
-		super.processPreInitArgs(args);
-		for (int i = 0; i < args.length; i++) {
-    		String argType = args[i];
-    		if (argType.equals("-tamerModel") && (i+1) < args.length){
-    			if (args[i+1].equals("linear")) {
-    				System.out.println("Setting model to linear model");
-    				this.params.featClass = "FeatGen_RBFs";
-    				this.params.modelClass = "IncGDLinearModel";
-    				
-    				// These fit the RBF class that was tested to give identical output with that of the python code
-    				this.params.featGenParams.put("basisFcnsPerDim", "40");
-    				this.params.featGenParams.put("relWidth", "0.08");
-    				this.params.featGenParams.put("biasFeatVal", "0.1");
-    				this.params.featGenParams.put("normMin", "-1");
-    				this.params.featGenParams.put("normMax", "1");
-   					
-   					// Learning params
-    				this.params.initModelWSamples = false;
-    				this.params.initWtsValue = 0.0;
-    				this.params.stepSize = 0.001; // matches python code
-    			}
-    			else if (args[i+1].equals("kNN")) {
-    				this.params.modelClass = "WekaModelPerActionModel";
-    				this.params.featClass = "FeatGen_NoChange";
-    				this.params.initModelWSamples = false; //// no biasing in MC for ALIHT paper and ICML workshop paper
-    				this.params.numBiasingSamples = 100;
-    				this.params.biasSampleWt = 0.1;
-    				this.params.wekaModelName = "IBk"; //// IBk for ALIHT paper and ICML workshop paper
-    			}
-    			else {
-    				System.out.println("\nIllegal TamerAgent model type. Exiting.\n\n");
-    				System.exit(1);
-    			}
-    			
-    			System.out.println("agent model set to: " + args[i+1]);
-    		}
-    		else if (argType.equals("-credType") && (i+1) < args.length){
-    			if (args[i+1].equals("aggregate")) {
-    				this.params.delayWtedIndivRew = false;
-    				this.params.noUpdateWhenNoRew = false;
-    			}
-    			else if (args[i+1].equals("aggregRewOnly")) {
-    				this.params.delayWtedIndivRew = false;
-    				this.params.noUpdateWhenNoRew = true;    				
-    			}
-    			else if (args[i+1].equals("indivAlways")) {
-    				this.params.delayWtedIndivRew = true;
-    				this.params.noUpdateWhenNoRew = false;
-    			}
-    			else if (args[i+1].equals("indivRewOnly")) {
-    				this.params.delayWtedIndivRew = true;
-    				this.params.noUpdateWhenNoRew = true;    				
-    			}
-    			else{
-    				System.out.println("\nIllegal TamerAgent credit assignment type. Exiting.\n\n");
-    				System.exit(1);
-    			}
-    			System.out.println("agent.credType set to: " + args[i+1]);
-    		}
-		}
-	}
-
-	public void receiveKeyInput(char c){
-		super.receiveKeyInput(c);
-		System.out.println("TamerAgent receives key: " + c);
-		if (c == '/') {
-			this.addHRew(1.0);
-		}
-		else if (c == 'z') {
-			this.addHRew(-1.0);
-		}
-		else if (c == '?') {
-			this.addHRew(10.0);
-		}
-		else if (c == 'Z') {
-			this.addHRew(-10.0);
-		}
-		else if (c == ' ' && this.allowUserToggledTraining) {
-			this.toggleInTrainSess();
-			this.hLearner.credA.setInTrainSess(Stopwatch.getComparableTimeInSec(), this.inTrainSess);
-		}
-		else if (c == 'S') {
-			this.model.saveDataAsArff(this.envName, (int)Stopwatch.getWallTimeInSec(), "");
-		}
-		
-//		System.out.println("hRewList after key input: " + this.hRewList.toString());
-	}
-    
-	public void initRecords() {
-		super.initRecords();
-		if (this.hLearner != null)
-			this.hLearner.clearHistory();
-		this.lastStepStartTime = -10000000;
-	}
-  
-
-    public static ParameterHolder getDefaultParameters() {
-        ParameterHolder p = new ParameterHolder();
-        rlVizLib.utilities.UtilityShop.setVersionDetails(p, new DetailsProvider());
-        return p;
-    }
-    
-    
+	public Sample[] getLastLearningSamples(){return this.lastLearningSamples;}
     
     
 	// Called when the environment is loaded (when "Load Experiment" is clicked in RLViz)
@@ -216,8 +102,6 @@ public class TamerAgent extends GeneralAgent implements AgentInterface {
     
 
 
-
-    
 
 
 	// Called at the beginning of each episode (in RLViz, it's first called when "Start" is first clicked)
@@ -259,7 +143,7 @@ public class TamerAgent extends GeneralAgent implements AgentInterface {
 //		if (this.stepsThisEp == 2)
 			//System.out.println("Predicted human reward for last step in TAMER: " + this.getVal(this.lastObsAndAct));
 		processPrevTimeStep(this.stepStartTime);
-		this.hLearner.processSamples(startTime, inTrainSess);
+		this.lastLearningSamples = this.hLearner.processSamples(startTime, inTrainSess);
 		
 		/*
 		 *  GET ACTION
@@ -269,9 +153,6 @@ public class TamerAgent extends GeneralAgent implements AgentInterface {
 		if (this.currObsAndAct.actIsNull()) {
 			this.currObsAndAct.setAct(this.actSelector.selectAction(o, tieBreakAction));
 		}
-//		else { // TODO this is for debugging only. it should be removed.
-//			this.actSelector.selectAction(o, tieBreakAction);
-//		}
     	
 //		if (this.stepsThisEp == 399)
 //			System.out.println("TAMER act vals: " + Arrays.toString(this.model.getStateActOutputs(o, this.model.getPossActions(o))));
@@ -303,22 +184,10 @@ public class TamerAgent extends GeneralAgent implements AgentInterface {
     
     
     
-	protected void processPrevTimeStep(double borderTime){ // if this does RL, it will need more: the observation and last reward
-		//// GET FEATURES OF PREVIOUS TIME STEP 
-//		if (this.stepsThisEp > 1) {
-//			double[] feats = this.featGen.getFeats(this.lastObs, this.lastAct);
-			//		System.out.println("state-action feats from last step: " + Arrays.toString(feats));
-			//		System.out.println("inTrainSess: " + inTrainSess);
-
-			//// RECORD LAST TIME STEP (must be recorded after action chosen to have state-action features)
-//			this.hLearner.recordTimeStep(feats, this.lastStepStartTime);
-//		}
-
-		
+	protected void processPrevTimeStep(double borderTime){ // if this does RL, it will need more: the observation and last reward		
 		if (inTrainSess) //// UPDATE
 			this.hLearner.processHRew(this.hRewThisStep);
 
-		
 		if (verbose)
 			System.out.println("hRewThisStep: " + this.hRewThisStep.toString());
 	}
@@ -343,6 +212,125 @@ public class TamerAgent extends GeneralAgent implements AgentInterface {
 		System.out.println("\thRewThisStep: " + hRewThisStep.toString());
 	}
 
+	   public static void main(String[] args){
+	    	TamerAgent agent = new TamerAgent();
+	    	agent.processPreInitArgs(args);
+	    	if (agent.glue) {
+	        	AgentLoader L=new AgentLoader(agent);
+	        	L.run();
+	    	}
+	    	else {
+	    		agent.runSelf();
+	    	}
+	    }  
+	    
+		public void processPreInitArgs(String[] args) {
+			System.out.println("\n[------Tamer process pre-init args------] " + Arrays.toString(args));
+			super.processPreInitArgs(args);
+			for (int i = 0; i < args.length; i++) {
+	    		String argType = args[i];
+	    		if (argType.equals("-tamerModel") && (i+1) < args.length){
+	    			if (args[i+1].equals("linear")) {
+	    				System.out.println("Setting model to linear model");
+	    				this.params.featClass = "FeatGen_RBFs";
+	    				this.params.modelClass = "IncGDLinearModel";
+	    				
+	    				// These fit the RBF class that was tested to give identical output with that of the python code
+	    				this.params.featGenParams.put("basisFcnsPerDim", "40");
+	    				this.params.featGenParams.put("relWidth", "0.08");
+	    				this.params.featGenParams.put("biasFeatVal", "0.1");
+	    				this.params.featGenParams.put("normMin", "-1");
+	    				this.params.featGenParams.put("normMax", "1");
+	   					
+	   					// Learning params
+	    				this.params.initModelWSamples = false;
+	    				this.params.initWtsValue = 0.0;
+	    				this.params.stepSize = 0.001; // matches python code
+	    			}
+	    			else if (args[i+1].equals("kNN")) {
+	    				this.params.modelClass = "WekaModelPerActionModel";
+	    				this.params.featClass = "FeatGen_NoChange";
+	    				this.params.initModelWSamples = false; //// no biasing in MC for ALIHT paper and ICML workshop paper
+	    				this.params.numBiasingSamples = 100;
+	    				this.params.biasSampleWt = 0.1;
+	    				this.params.wekaModelName = "IBk"; //// IBk for ALIHT paper and ICML workshop paper
+	    			}
+	    			else {
+	    				System.out.println("\nIllegal TamerAgent model type. Exiting.\n\n");
+	    				System.exit(1);
+	    			}
+	    			
+	    			System.out.println("agent model set to: " + args[i+1]);
+	    		}
+	    		else if (argType.equals("-credType") && (i+1) < args.length){
+	    			if (args[i+1].equals("aggregate")) {
+	    				this.params.delayWtedIndivRew = false;
+	    				this.params.noUpdateWhenNoRew = false;
+	    			}
+	    			else if (args[i+1].equals("aggregRewOnly")) {
+	    				this.params.delayWtedIndivRew = false;
+	    				this.params.noUpdateWhenNoRew = true;    				
+	    			}
+	    			else if (args[i+1].equals("indivAlways")) {
+	    				this.params.delayWtedIndivRew = true;
+	    				this.params.noUpdateWhenNoRew = false;
+	    			}
+	    			else if (args[i+1].equals("indivRewOnly")) {
+	    				this.params.delayWtedIndivRew = true;
+	    				this.params.noUpdateWhenNoRew = true;    				
+	    			}
+	    			else{
+	    				System.out.println("\nIllegal TamerAgent credit assignment type. Exiting.\n\n");
+	    				System.exit(1);
+	    			}
+	    			System.out.println("agent.credType set to: " + args[i+1]);
+	    		}
+			}
+		}
+
+		public void receiveKeyInput(char c){
+			super.receiveKeyInput(c);
+			System.out.println("TamerAgent receives key: " + c);
+			if (c == '/') {
+				this.addHRew(1.0);
+			}
+			else if (c == 'z') {
+				this.addHRew(-1.0);
+			}
+			else if (c == '?') {
+				this.addHRew(10.0);
+			}
+			else if (c == 'Z') {
+				this.addHRew(-10.0);
+			}
+			else if (c == ' ' && this.allowUserToggledTraining) {
+				this.toggleInTrainSess();
+				this.hLearner.credA.setInTrainSess(Stopwatch.getComparableTimeInSec(), this.inTrainSess);
+			}
+			else if (c == 'S') {
+				this.model.saveDataAsArff(this.envName, (int)Stopwatch.getWallTimeInSec(), "");
+			}
+			
+//			System.out.println("hRewList after key input: " + this.hRewList.toString());
+		}
+	    
+		public void initRecords() {
+			super.initRecords();
+			if (this.hLearner != null)
+				this.hLearner.clearHistory();
+			this.lastStepStartTime = -10000000;
+		}
+	  
+
+	    public static ParameterHolder getDefaultParameters() {
+	        ParameterHolder p = new ParameterHolder();
+	        rlVizLib.utilities.UtilityShop.setVersionDetails(p, new DetailsProvider());
+	        return p;
+	    }
+	    
+	    
+	
+	
 }
 
 
