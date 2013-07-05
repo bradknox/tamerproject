@@ -5,10 +5,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-import edu.utexas.cs.tamerProject.agents.CreditAssignParamVec;
-import edu.utexas.cs.tamerProject.modeling.Sample;
+import org.rlcommunity.rlglue.codec.types.Action;
+import org.rlcommunity.rlglue.codec.types.Observation;
 
-//TODO - the class TimeStep has a redundant name, which is super dangerous. rename.
+import edu.utexas.cs.tamerProject.agents.CreditAssignParamVec;
+import edu.utexas.cs.tamerProject.featGen.FeatGenerator;
+import edu.utexas.cs.tamerProject.modeling.Sample;
+import edu.utexas.cs.tamerProject.modeling.SampleWithObsAct;
+
 
 /**
  * CreditAssign implements TAMER's credit assignment technique, first described
@@ -32,6 +36,7 @@ public class CreditAssign{
 		public double startTime = UNASSIGNED_START_TIME;
 		public double endTime = UNASSIGNED_END_TIME;
 		public double[] feats = null;
+		// TODO add obs and act?
 		public boolean throwOut = false; // if true, will not be used for learning
 		public boolean setInStone = false;
 		public double credUsedBeforeLastStep = 0;
@@ -50,7 +55,7 @@ public class CreditAssign{
 	public static final Random randGenerator = new Random();
 	
 	ArrayList<TimeStepForCred> timeStepsInWindow;
-	ArrayList<Sample> activeSamples;
+	ArrayList<SampleWithObsAct> activeSamples;
 	int totalTimeSteps;
 	final int UNIQUE_START;
 	
@@ -98,8 +103,19 @@ public class CreditAssign{
 		if (this.timeStepsInWindow.size() > 0)
 			this.timeStepsInWindow.get(lastTimeStepI).endTime = btwnStepTime;
 	}
+	
 	public void recordTimeStepStart(double[] feats, double btwnStepTime){
+		this.recordTimeStepStart(null, null, feats, btwnStepTime);
+	}
+	
+	public void recordTimeStepStart(Observation o, Action a, FeatGenerator featGen, double btwnStepTime){
+		this.recordTimeStepStart(o, a, featGen.getFeats(o, a), btwnStepTime);
+	}
+	
+	public void recordTimeStepStart(Observation o, Action a, double[] feats, double btwnStepTime){
 		// add new time step
+
+		// TODO add o and a and make sure they can be used later
 		this.timeStepsInWindow.add(new TimeStepForCred());
 		int lastTimeStepI = this.timeStepsInWindow.size() - 1;
 		if (this.timeStepsInWindow.size() > 1 && 
@@ -112,7 +128,7 @@ public class CreditAssign{
 		this.timeStepsInWindow.get(lastTimeStepI).startTime = btwnStepTime;
 		
 		int newSampleUnique = delayWtedIndivRew ? -1 : this.totalTimeSteps + UNIQUE_START; 
-		this.activeSamples.add(new Sample(feats, 1.0, newSampleUnique));
+		this.activeSamples.add(new SampleWithObsAct(feats, 1.0, newSampleUnique, o, a));
 		this.totalTimeSteps++;
 		//System.out.println("this.activeSamples.size(): " + this.activeSamples.size());
 	}
@@ -128,7 +144,7 @@ public class CreditAssign{
 	 * The "current" step should be the actual current one if this is called during a time step,
 	 * and the just-finished step f this is called between steps (i.e., during agent_step()).
 	 *  
-	 * Quick math illustration: For a window of 3, the current step index is 2, so (3-2)-1
+	 * Quick math illustration: For a window of 3, if the current step index is 2, then (3-2)-1
 	 * makes 0 time steps before current.
 	 **/
 	private int getStepsBeforeCurrent(int stepIndex){
@@ -158,7 +174,7 @@ public class CreditAssign{
 	 * Since, that case is for an out-dated credit assignment method, it can mostly
 	 * be ignored.
 	 */
-	public Sample[] processSamplesAndRemoveFinished(double currTime, boolean inTrainSess) {
+	public SampleWithObsAct[] processSamplesAndRemoveFinished(double currTime, boolean inTrainSess) {
 //		println("\n\n\n-------processSamplesAndRemoveFinished");
 		
 		// enforce calling this method at the right time
@@ -176,8 +192,8 @@ public class CreditAssign{
 
 
 		
-		ArrayList<Sample> activeCreditedSamples = this.processTimeSteps(currTime, inTrainSess);
-		ArrayList<Sample> removedSamples = this.removeFinishedTimeSteps(currTime, inTrainSess);		
+		ArrayList<SampleWithObsAct> activeCreditedSamples = this.processTimeSteps(currTime, inTrainSess);
+		ArrayList<SampleWithObsAct> removedSamples = this.removeFinishedTimeSteps(currTime, inTrainSess);		
 		
 		//println("After processing, activeCreditedSamples: " + Arrays.toString(activeCreditedSamples.toArray()));
 		//println("After processing, removedSamples: " + Arrays.toString(removedSamples.toArray()));
@@ -187,11 +203,11 @@ public class CreditAssign{
 		if (noUpdateWhenNoRew) {
 			if (delayWtedIndivRew && allSamplesHaveZeroRew()) {
 				//System.out.println("no reward, no update.");
-				return new Sample[0];
+				return new SampleWithObsAct[0];
 			}
 		}
 		
-		ArrayList<Sample> samples = new ArrayList<Sample>();
+		ArrayList<SampleWithObsAct> samples = new ArrayList<SampleWithObsAct>();
 		if (EXTRAPOLATE_FUTURE_REW || delayWtedIndivRew) {
 			samples.addAll(activeCreditedSamples);
 			if (delayWtedIndivRew) { // clone samples and reset reward and labels 
@@ -215,7 +231,7 @@ public class CreditAssign{
 		}
 		//System.out.println("num activeSamples: " + activeSamples.size());
 
-		Sample[] samplesArray = new Sample[samples.size()];
+		SampleWithObsAct[] samplesArray = new SampleWithObsAct[samples.size()];
 		samples.toArray(samplesArray); // convert ArrayList to regular array
 		return samplesArray;
 	}
@@ -235,12 +251,12 @@ public class CreditAssign{
 	 * @param inTrainSess
 	 * @return
 	 */
-	private ArrayList<Sample> processTimeSteps(double currTime, boolean inTrainSess) {
+	private ArrayList<SampleWithObsAct> processTimeSteps(double currTime, boolean inTrainSess) {
 		//println("-------processTimeSteps\ncurrTime: " + String.format("%f", currTime));
 		
-		ArrayList<Sample> activeCreditedSamples = new ArrayList<Sample>();
+		ArrayList<SampleWithObsAct> activeCreditedSamples = new ArrayList<SampleWithObsAct>();
 		for (int i = 0; i < this.timeStepsInWindow.size(); i++) {
-			Sample activeSample = this.activeSamples.get(i);
+			SampleWithObsAct activeSample = this.activeSamples.get(i);
 			TimeStepForCred step = this.timeStepsInWindow.get(i);
 			//println("Time step before: " + this.timeStepsInWindow.get(i));
 			//println("Sample before: " + this.activeSamples.get(i));
@@ -304,10 +320,10 @@ public class CreditAssign{
 	 * @param inTrainSess
 	 * @return
 	 */
-	private ArrayList<Sample> removeFinishedTimeSteps(double currTime, boolean inTrainSess) {
+	private ArrayList<SampleWithObsAct> removeFinishedTimeSteps(double currTime, boolean inTrainSess) {
 		//println("-------removeFinishedTimeSteps\ncurrTime: " + String.format("%f", currTime));
 		// remove any time steps completely beyond window
-		ArrayList<Sample> removedSamples = new ArrayList<Sample>();
+		ArrayList<SampleWithObsAct> removedSamples = new ArrayList<SampleWithObsAct>();
 		int iRemovalOffset = this.distClass == "immediate" ? 0 : 1; // unless immediate, skip last one b/c it should be unfinished
 		for (int i = 0; i < this.timeStepsInWindow.size() - iRemovalOffset; i++) { 
 			//println("Remove sample? " + this.activeSamples.get(i));
@@ -358,9 +374,9 @@ public class CreditAssign{
 		return finished;
 	}
 
-	private Sample removeSample(int sampleI) {
+	private SampleWithObsAct removeSample(int sampleI) {
 		TimeStepForCred step = this.timeStepsInWindow.remove(sampleI);
-		Sample sample = this.activeSamples.remove(sampleI);		
+		SampleWithObsAct sample = this.activeSamples.remove(sampleI);		
 		sample.label = sample.unweightedRew / sample.usedCredit;
 		return sample;
 	}
@@ -393,7 +409,7 @@ public class CreditAssign{
 	
 	public void clearHistory(){
 		this.timeStepsInWindow = new ArrayList<TimeStepForCred>();
-		this.activeSamples = new ArrayList<Sample>();
+		this.activeSamples = new ArrayList<SampleWithObsAct>();
 	}
 
 
@@ -406,7 +422,7 @@ public class CreditAssign{
 			//println("credit: " + credit);
 			double rewardShare = hReward * credit;
 			totalRewardShare += rewardShare;
-			Sample sample = this.activeSamples.get(i);
+			SampleWithObsAct sample = this.activeSamples.get(i);
 			///println("Credit " + credit + " given to sample:\n" + sample);
 			sample.unweightedRew += rewardShare;
 			sample.usedCredit = Math.max(getCreditPastElig(i, getStepsBeforeCurrent(i), hRewTime), sample.usedCredit);			
@@ -535,7 +551,7 @@ public class CreditAssign{
 	}
 	
 
-	private void removeSamplesWNoNewCred(ArrayList<Sample> samples){
+	private void removeSamplesWNoNewCred(ArrayList<SampleWithObsAct> samples){
 		for (int i = 0; i < samples.size(); i++) {
 			//System.out.print(i + ": " );
 			if (samples.get(i).creditUsedLastStep == 0.0) {
@@ -549,7 +565,7 @@ public class CreditAssign{
 			//}
 		}
 	}
-	private void removeSamplesWZeroRew(ArrayList<Sample> samples){
+	private void removeSamplesWZeroRew(ArrayList<SampleWithObsAct> samples){
 		for (int i = 0; i < samples.size(); i++) {
 			if (samples.get(i).label == 0) {
 				samples.remove(i);
@@ -558,7 +574,7 @@ public class CreditAssign{
 			}
 		}
 	}
-	private void setWtToCredLastStep(ArrayList<Sample> samples){
+	private void setWtToCredLastStep(ArrayList<SampleWithObsAct> samples){
 		for (int i = 0; i < samples.size(); i++) 
 			samples.get(i).weight = samples.get(i).creditUsedLastStep;
 	}
@@ -588,64 +604,64 @@ public class CreditAssign{
 	
 	
 
-	public static void main(String[] args) {
-		//// CREATE CreditAssignParamVec
-		String distClass = "uniform";
-		double creditDelay = 0.2;
-		double windowSize = 0.6;
-		boolean extrapolateFutureRewards = true;
-		CreditAssignParamVec credAssignParams = new CreditAssignParamVec(distClass, creditDelay, 
-															windowSize, extrapolateFutureRewards,
-															false, true);
-		CreditAssign credA = new CreditAssign(credAssignParams);
-		credA.setInTrainSess(0.0, true);
-		
-		for (int i = 0; i < 10; i++) {
-			credA.println("\n\n");
-			double[] feats = {i, i + 10};
-			credA.recordTimeStepEnd((0.2 * i));
-			credA.recordTimeStepStart(feats, (0.2 * i));
-			credA.processNewHReward((0.2 * i) == 1.8?1:0, (0.2 * i));
-			Sample[] samplesForUpdate = credA.processSamplesAndRemoveFinished(0.2 * i, true);
-			System.out.println("\nsamples for update: \n" + Arrays.toString(samplesForUpdate));
-			System.out.println("\nactiveSamples: \n" + credA.activeSamples);
-		}
-		double[] feats2 = {10, 20};
-		credA.processNewHReward(1.0, 1.9);
-		credA.recordTimeStepEnd(2.0);
-		credA.recordTimeStepStart(feats2, 2.0);
-		credA.removeFinishedTimeSteps(2.0, true);
-		credA.processNewHReward(1.0, 2.0);
-		Sample[] creditedSamples2 = credA.processSamplesAndRemoveFinished(2.0, true);
-		credA.println("\n\n\nCredited samples: " + Arrays.toString(creditedSamples2));
-		credA.println("");
-		credA.clearHistory(); 
-		credA.processNewHReward(2.0, 2.0);
-		Sample[] clearedCreditedSamples = credA.processSamplesAndRemoveFinished(2.0, true);
-		credA.println("\n\n\nCredited samples after clearing: " + Arrays.toString(clearedCreditedSamples));
-		
-		
-		// calculation of example in figure of journal paper
-		System.out.println("\n\n\n-----calculation of example in figure of journal paper-----");
-		credA.recordTimeStepStart(feats2, (3.25));
-		credA.processNewHReward(2.0, 3.4);
-		credA.recordTimeStepEnd(3.45);
-		credA.recordTimeStepStart(feats2, 3.45);
-		credA.processNewHReward(2.0, 3.85);
-		// uncomment the next three lines for the intermediate label example
-		creditedSamples2 = credA.processSamplesAndRemoveFinished(3.9, true);
-		credA.println("activeSamples (where example label is): " + credA.activeSamples);
-		credA.println("\n\n\nCredited samples: " + Arrays.toString(creditedSamples2));
-		
-		credA.processNewHReward(2.0, 4.1);
-		
-		// uncomment the next three lines for the final label example
-		//creditedSamples2 = credA.processSamplesAndRemoveFinished(4.3, true);
-		//credA.println("activeSamples: " + credA.activeSamples);
-		//credA.println("credited samples (where example label is): " + Arrays.toString(creditedSamples2));
-		
-		
-	}
+//	public static void main(String[] args) {
+//		//// CREATE CreditAssignParamVec
+//		String distClass = "uniform";
+//		double creditDelay = 0.2;
+//		double windowSize = 0.6;
+//		boolean extrapolateFutureRewards = true;
+//		CreditAssignParamVec credAssignParams = new CreditAssignParamVec(distClass, creditDelay, 
+//															windowSize, extrapolateFutureRewards,
+//															false, true);
+//		CreditAssign credA = new CreditAssign(credAssignParams);
+//		credA.setInTrainSess(0.0, true);
+//		
+//		for (int i = 0; i < 10; i++) {
+//			credA.println("\n\n");
+//			double[] feats = {i, i + 10};
+//			credA.recordTimeStepEnd((0.2 * i));
+//			credA.recordTimeStepStart(feats, (0.2 * i));
+//			credA.processNewHReward((0.2 * i) == 1.8?1:0, (0.2 * i));
+//			Sample[] samplesForUpdate = credA.processSamplesAndRemoveFinished(0.2 * i, true);
+//			System.out.println("\nsamples for update: \n" + Arrays.toString(samplesForUpdate));
+//			System.out.println("\nactiveSamples: \n" + credA.activeSamples);
+//		}
+//		double[] feats2 = {10, 20};
+//		credA.processNewHReward(1.0, 1.9);
+//		credA.recordTimeStepEnd(2.0);
+//		credA.recordTimeStepStart(feats2, 2.0);
+//		credA.removeFinishedTimeSteps(2.0, true);
+//		credA.processNewHReward(1.0, 2.0);
+//		Sample[] creditedSamples2 = credA.processSamplesAndRemoveFinished(2.0, true);
+//		credA.println("\n\n\nCredited samples: " + Arrays.toString(creditedSamples2));
+//		credA.println("");
+//		credA.clearHistory(); 
+//		credA.processNewHReward(2.0, 2.0);
+//		Sample[] clearedCreditedSamples = credA.processSamplesAndRemoveFinished(2.0, true);
+//		credA.println("\n\n\nCredited samples after clearing: " + Arrays.toString(clearedCreditedSamples));
+//		
+//		
+//		// calculation of example in figure of journal paper
+//		System.out.println("\n\n\n-----calculation of example in figure of journal paper-----");
+//		credA.recordTimeStepStart(feats2, (3.25));
+//		credA.processNewHReward(2.0, 3.4);
+//		credA.recordTimeStepEnd(3.45);
+//		credA.recordTimeStepStart(feats2, 3.45);
+//		credA.processNewHReward(2.0, 3.85);
+//		// uncomment the next three lines for the intermediate label example
+//		creditedSamples2 = credA.processSamplesAndRemoveFinished(3.9, true);
+//		credA.println("activeSamples (where example label is): " + credA.activeSamples);
+//		credA.println("\n\n\nCredited samples: " + Arrays.toString(creditedSamples2));
+//		
+//		credA.processNewHReward(2.0, 4.1);
+//		
+//		// uncomment the next three lines for the final label example
+//		//creditedSamples2 = credA.processSamplesAndRemoveFinished(4.3, true);
+//		//credA.println("activeSamples: " + credA.activeSamples);
+//		//credA.println("credited samples (where example label is): " + Arrays.toString(creditedSamples2));
+//		
+//		
+//	}
 	
 	public void print(String s) {
 		System.out.print(s);

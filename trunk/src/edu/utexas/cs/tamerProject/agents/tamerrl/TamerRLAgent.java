@@ -393,8 +393,8 @@ public class TamerRLAgent extends GeneralAgent implements AgentInterface {
 		
 		//this.tamerAgent.hLearner.recordTimeStep(this.tamerAgent.featGen.getFeats(o, this.action), time);
 		if (this.COMBINATION_METHOD != RL_ONLY) { // TODO make a common variable to replace this and its use above
-			this.tamerAgent.hLearner.recordTimeStepStart(this.tamerAgent.featGen.getFeats(o, 
-														this.currObsAndAct.getAct()), this.stepStartTime); // called here b/c action was unknown at the time of tamerAgent's agent_step()
+			this.tamerAgent.hLearner.recordTimeStepStart(o, this.currObsAndAct.getAct(), this.tamerAgent.featGen, 
+														this.stepStartTime); // called here b/c action was unknown at the time of tamerAgent's agent_step()
 		}
 
     	double manipulatedR = this.getManipulatedRew(r, o);

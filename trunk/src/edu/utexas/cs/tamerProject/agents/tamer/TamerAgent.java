@@ -30,6 +30,7 @@ import edu.utexas.cs.tamerProject.agents.CreditAssignParamVec;
 import edu.utexas.cs.tamerProject.agents.GeneralAgent;
 import edu.utexas.cs.tamerProject.agents.HLearner;
 import edu.utexas.cs.tamerProject.modeling.Sample;
+import edu.utexas.cs.tamerProject.modeling.SampleWithObsAct;
 import edu.utexas.cs.tamerProject.trainInterface.TrainerListener;
 import edu.utexas.cs.tamerProject.utils.Stopwatch;
 
@@ -58,11 +59,11 @@ public class TamerAgent extends GeneralAgent implements AgentInterface {
 	 *  instead through its static variable PAUSE_DUR_AFTER_EP. ****
 	 */
 	public int EP_END_PAUSE = 0; //2000; /
-	private Sample[] lastLearningSamples;
+	private SampleWithObsAct[] lastLearningSamples;
 	public static boolean verifyObsFitsEnvDesc = true;
 	
 	
-	public Sample[] getLastLearningSamples(){return this.lastLearningSamples;}
+	public SampleWithObsAct[] getLastLearningSamples(){return this.lastLearningSamples;}
     
     
 	// Called when the environment is loaded (when "Load Experiment" is clicked in RLViz)
@@ -164,7 +165,7 @@ public class TamerAgent extends GeneralAgent implements AgentInterface {
 //			System.out.println("TAMER last action: " + this.lastAct.intArray[0]);
 		this.stepEndHelper(r, o);
 		if (this.isTopLevelAgent) // If not top level, TamerAgent's chosen action might not be the actual action. This must be called by the primary class.
-			this.hLearner.recordTimeStepStart(this.featGen.getFeats(o, this.currObsAndAct.getAct()), startTime);
+			this.hLearner.recordTimeStepStart(o, this.currObsAndAct.getAct(), this.featGen, startTime);
 		
 		return this.currObsAndAct.getAct();
     }

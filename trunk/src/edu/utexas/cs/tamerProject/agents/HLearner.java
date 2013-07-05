@@ -2,8 +2,14 @@ package edu.utexas.cs.tamerProject.agents;
 
 import java.util.ArrayList;
 
+import org.rlcommunity.rlglue.codec.types.Action;
+import org.rlcommunity.rlglue.codec.types.Observation;
+
+
 import edu.utexas.cs.tamerProject.agents.tamer.HRew;
+import edu.utexas.cs.tamerProject.featGen.FeatGenerator;
 import edu.utexas.cs.tamerProject.modeling.Sample;
+import edu.utexas.cs.tamerProject.modeling.SampleWithObsAct;
 import edu.utexas.cs.tamerProject.modeling.templates.RegressionModel;
 
 
@@ -42,14 +48,14 @@ public class HLearner {
 	}
 
 	// each time step will have a endTime, which is the next step's startTime
-	public void recordTimeStep(double[] feats, double startTime){
+	public void recordTimeStep(Observation o, Action a, FeatGenerator featGen, double startTime){
 		this.recordTimeStepEnd(startTime);
-		this.recordTimeStepStart(feats, startTime);
+		this.recordTimeStepStart(o, a, featGen, startTime);
 	}
 	
 	// each time step will have a endTime, which is the next step's startTime
-	public void recordTimeStepStart(double[] feats, double startTime){
-		this.credA.recordTimeStepStart(feats, startTime);
+	public void recordTimeStepStart(Observation o, Action a, FeatGenerator featGen, double startTime){
+		this.credA.recordTimeStepStart(o, a, featGen, startTime);
 	}
 	
 	// each time step will have a endTime, which is the next step's startTime
@@ -57,9 +63,9 @@ public class HLearner {
 		this.credA.recordTimeStepEnd(endTime);
 	}
 	
-	public Sample[] processSamples(double currTime, boolean inTrainSess) {
+	public SampleWithObsAct[] processSamples(double currTime, boolean inTrainSess) {
 		//System.out.print("\n\nHLearner processSamples()");
-		Sample[] samples = this.credA.processSamplesAndRemoveFinished(currTime, inTrainSess);
+		SampleWithObsAct[] samples = this.credA.processSamplesAndRemoveFinished(currTime, inTrainSess);
 		//if (samples.length > 0)
 		//	System.out.println("Adding " + samples.length + " samples.");
 		if (samples.length > 0)
