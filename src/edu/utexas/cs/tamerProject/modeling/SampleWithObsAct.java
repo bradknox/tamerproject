@@ -5,8 +5,8 @@ import org.rlcommunity.rlglue.codec.types.Observation;
 
 public class SampleWithObsAct extends Sample{
 
-	Observation obs = null;
-	Action act = null;
+	public Observation obs = null;
+	public Action act = null;
 
 	public SampleWithObsAct(double[] feats, double weight) {super(feats, weight);}
 
