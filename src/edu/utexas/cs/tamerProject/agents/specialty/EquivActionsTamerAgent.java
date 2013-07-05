@@ -57,7 +57,7 @@ public class EquivActionsTamerAgent extends TamerAgent {
 
 			this.stepEndHelper(r, o);
 			if (this.isTopLevelAgent) // If not top level, TamerAgent's chosen action might not be the actual action. This must be called by the primary class.
-				this.hLearner.recordTimeStepStart(this.featGen.getFeats(o, this.currObsAndAct.getAct()), this.stepStartTime);
+				this.hLearner.recordTimeStepStart(o, this.currObsAndAct.getAct(), this.featGen, this.stepStartTime);
 			
 			return this.currObsAndAct.getAct();
 	    }

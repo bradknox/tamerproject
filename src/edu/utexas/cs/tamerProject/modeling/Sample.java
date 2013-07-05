@@ -3,7 +3,7 @@ package edu.utexas.cs.tamerProject.modeling;
 import java.util.Arrays;
 
 public class Sample implements Cloneable{
-	public final boolean REGRESSION_SAMPLE = true;
+//	protected boolean REGRESSION_SAMPLE = true; // TODO remove all refs to this variable
 	
 	public double[] feats;
 	public double label = 0;
@@ -36,6 +36,8 @@ public class Sample implements Cloneable{
 		this.label = label;
 	}
 
+//	public boolean isRegressionSample() {return REGRESSION_SAMPLE;}
+//	protected void setIsRegressionSample(boolean isRegressionSample){this.REGRESSION_SAMPLE = isRegressionSample;}
 	
 	
 	// attributes are simply the feats with the reward label appended. formatted for weka.

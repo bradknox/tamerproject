@@ -112,7 +112,7 @@ public class HInfluence {
 		double[] normFeats = new double[feats.length];
 //		System.out.println("feats.lengths: " + feats.length);
 		for (int i = 0; i < feats.length; i++) {
-			normFeats[i] = (feats[i] - this.minFeats[i]) / (maxFeats[i] - minFeats[i]);
+			normFeats[i] = (feats[i] - this.minFeats[i]) / (this.maxFeats[i] - this.minFeats[i]);
 			if ((maxFeats[i] - minFeats[i] == 0)) {
 				normFeats[i] = 0.0;
 //				System.out.println("feats[" + i + "]: " + feats[i]);

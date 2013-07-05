@@ -436,7 +436,7 @@ public class AsynchDPAgent extends GeneralAgent {
     	/*
     	 * ACTION-SPECIFIC TAMER UPDATES
     	 */
-    	this.tamerAgent.hLearner.recordTimeStepStart(this.tamerAgent.featGen.getFeats(o, this.currObsAndAct.getAct()), startTime); // called here b/c action was unknown at the time of tamerAgent's agent_step()
+    	this.tamerAgent.hLearner.recordTimeStepStart(o, this.currObsAndAct.getAct(), this.tamerAgent.featGen, this.stepStartTime); // called here b/c action was unknown at the time of tamerAgent's agent_step()
     	
 
 	    // TODO UPDATE with actual experience? This would complicate code with a trivial performance impact unless I use eligibility traces.
