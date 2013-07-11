@@ -18,7 +18,7 @@ import edu.utexas.cs.tamerProject.agents.dynamicProgramming.DPAgent;
  * for this agent is zero, it's equivalent to a TAMER agent. (However,
  * directly using TamerAgent works on a wider range of environments.)
  * 
- * Note that D5LoopmazeVITamerHelper sets up the agent and environment.
+ * Note that D10LoopmazeVITamerHelper sets up the agent and environment.
  * 
  * Value iteration will only work with environments that have discrete 
  * states and actions.
@@ -27,6 +27,21 @@ import edu.utexas.cs.tamerProject.agents.dynamicProgramming.DPAgent;
  * can now give reward. '/' key gives +1. 'z' key gives -1. Also, the
  * space bar turns training on and off (i.e., the agent will only update
  * its reward model when training is on).
+ * 
+ * To have the applet ask for the trainer's unique code and attempt to 
+ * log data by PHP (which you'll have to ask Brad Knox how to do or 
+ * reverse-engineer from this code), set the applet parameters to 
+ * isHIT = true and numInTaskSeq = 1. A workable code has 4 parts
+ * divided by 'z' characters: 
+ * 
+ * <any string of letters without z>z<'u' or 'd'>z<'c' or 'd'>z<a unique number for the subject>
+ * 
+ * The consequences of the character choices in the code template above
+ * can be seen in D10LoopmazeVITamerHelper.processTrainerUnique().
+ * 
+ * To actually save logs, change code below to setRecordLog(true) and/or 
+ * setRecordLog(true).
+ * 
  * 
  * Further commenting for this and the helper class still needs to be 
  * done.

@@ -211,7 +211,7 @@ public class TamerApplet extends RLApplet {
 					prepForStartTask();
 					startTask();
 				}
-				System.err.println("startCheckTimer calls run() in TamerApplet. Should stop after first call to startTask().");
+				System.err.println("startCheckTimer has called run() in TamerApplet. This message should stop after first call to startTask().");
 			}
 		}, new Date(), (long) 200);
 
@@ -406,6 +406,9 @@ public class TamerApplet extends RLApplet {
 			String currStateStr = statesDivStr[statesDivStr.length - 1];
 			if (preExpPanel != null)
 				preExpPanel.HITStateChecked = true;
+//			System.out.println("Current state string: " + currStateStr); // TODO remove
+			if (currStateStr.equals(""))
+				return 0;
 			return Integer.parseInt(currStateStr);
 		} catch (Exception e) {
 			System.err.println("Exception caught while getting HIT state. "

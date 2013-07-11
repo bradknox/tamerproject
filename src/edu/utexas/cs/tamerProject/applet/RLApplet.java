@@ -48,8 +48,16 @@ public class RLApplet extends JApplet
 	public static boolean DEBUG_TIME = false; // keep false as default
 	public static boolean IN_BROWSER = true;
 	
-	public URL dataCollectURL = null; //new URL("http://... <point to the location of tamer.php without including the file "tamer.php" itself in the URL>");
-	//new URL("http://...www.cs.utexas.edu/~bradknox/turk/");
+	public static URL dataCollectURL = null; 
+//	static {
+//		try { 
+//			dataCollectURL = null;// new URL("http://... <point to the location of tamer.php without including the file "tamer.php" itself in the URL>");  
+//		} 
+//		catch (MalformedURLException e) {
+//			System.err.println("Error while initializing dataCollectURL: " + e);
+//		}
+//	}
+	
 	
 	public void init() {
 		super.init();

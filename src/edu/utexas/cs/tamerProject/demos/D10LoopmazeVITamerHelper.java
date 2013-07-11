@@ -24,7 +24,7 @@ import edu.utexas.cs.tamerProject.experiments.GeneralExperiment;
 import edu.utexas.cs.tamerProject.params.Params;
 
 /**
- * Helper class for D5LoopmazeVITamerExp, used to initialize the
+ * Helper class for D10LoopmazeVITamerExp, used to initialize the
  * agent and environment as well as handle some experimental
  * details (like parsing and using the trainer's "unique").
  * 
@@ -39,7 +39,7 @@ import edu.utexas.cs.tamerProject.params.Params;
  */
 public class D10LoopmazeVITamerHelper extends GeneralExperiment {
 
-	static boolean debug = true;
+	static boolean debug = true; // set to false for experiment
 
 	public final String expPrefix = "discountingzloopmazezexpon";
 
@@ -353,7 +353,8 @@ public class D10LoopmazeVITamerHelper extends GeneralExperiment {
 	 */
 	public void processTrainerUnique(GeneralAgent agent, String trainerUnique) {
 		// get discount factor
-		String[] uniqueComponents = trainerUnique.split("z"); // TODO splitting params by z is not acceptable long-term; PHP needs modification to allow better separators
+		String[] uniqueComponents = trainerUnique.split("z"); // TODO splitting params by z is limiting; PHP needs modification to allow better separators
+		System.out.println("uniqueComponents: " + Arrays.toString(uniqueComponents));
 		if (uniqueComponents.length >= 2) {
 			String agentTypeStr = uniqueComponents[1];
 			if (agentTypeStr.equals("u")) {

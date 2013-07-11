@@ -57,7 +57,17 @@ public class ExpAnalyzer{
 	 * written for the MDP_REW case, so its variable names might seem specific to that case,
 	 * but any of these dependent variables can be used instead. 
 	 * 
-	 * MDP_REW - 
+	 * [Imprecise description, since it's been awhile since I used it:]
+	 * This class will find the total/mean amount of the specified dependent variable over
+	 * the given interval durations (in steps or episodes).
+	 * 
+	 * MDP_REW - The reward coming from the environment.
+	 * HREW - The reward coming from the human.
+	 * POS_HREW - The positively valued reward from the human.
+	 * NEG_HREW - The negatively valued reward from the human.
+	 * HREW_INSTS - The number of instances of human reward. 
+	 * HREW_FREQ - The number of instances of human reward per time step.
+	 * EP_DUR - The number of time steps per episode.
 	 *
 	 */
 	public enum DependentVar {MDP_REW, HREW, POS_HREW, NEG_HREW, HREW_INSTS, HREW_FREQ, EP_DUR}

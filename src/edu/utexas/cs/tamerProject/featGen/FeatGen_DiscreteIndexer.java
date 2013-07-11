@@ -61,7 +61,7 @@ public class FeatGen_DiscreteIndexer extends FeatGenerator{
 		
 		this.maxActIndex = FeatGen_DiscreteIndexer.possStaticActions.size() - 1;		
 		this.numFeatures = 2; // state index and action index
-		featCount = new int[this.numFeatures];
+//		featCount = new int[this.numFeatures];
 	}
 
 //	public void setSupplModel(RegressionModel model, FeatGenerator featGen) {
