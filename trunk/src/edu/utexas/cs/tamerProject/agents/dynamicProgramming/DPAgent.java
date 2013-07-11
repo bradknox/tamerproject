@@ -70,7 +70,7 @@ public class DPAgent extends GeneralAgent {
 	Stopwatch agentStopwatch = new Stopwatch();
 	
 	Timer sweepTimer;
-	public double timeBtwnDPSweeps = 1000; // in milliseconds
+	public double timeBtwnDPSweeps = 10; // in milliseconds
 	int numSweepsPerformed = 0;
 	public boolean printSweeps = false;
 	
