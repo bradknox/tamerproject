@@ -211,7 +211,7 @@ public class TamerApplet extends RLApplet {
 					prepForStartTask();
 					startTask();
 				}
-				System.err.println("startCheckTimer has called run() in TamerApplet. This message should stop after first call to startTask().");
+				//System.out.println("startCheckTimer has called run() in TamerApplet. This message should stop after first call to startTask().");
 			}
 		}, new Date(), (long) 200);
 
