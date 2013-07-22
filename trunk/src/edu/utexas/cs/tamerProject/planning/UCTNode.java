@@ -86,7 +86,23 @@ public class UCTNode extends TreeSearchNode{
 		 * Base cases - make leaf node
 		 */
 		if (depthToGo == 0) { 
-			return getMaxActNotTaken(false).getVal(); // return estimate of value 
+			/*
+			 * // TODO - I think the argument should be true below, so that a 
+			 * Bellman update is occurring (assuming deterministic transitions). 
+			 * As is, if this node has been reached previously before being a leaf, 
+			 * it will return the value of a non-greedy action. I don't think this 
+			 * is a big issue for the aVI-TAMER experiments though, since such a 
+			 * case would be a small fraction of the backups 
+			 * (i.e., [1 / (rollout length)] * 
+			 * (proportion of leaves that have been visited previously)). 
+			 * I could check how often this situation occurs in practice. Also, 
+			 * the issue with aVI-TAMER of looping on previously encountered (s,a)
+			 * pairs might actually be alleviated slightly by this coding error, 
+			 * which would tend to lower the value of states that are being 
+			 * encountered more often in the search tree, driving higher exploration.
+			 */
+					
+			return getMaxActNotTaken(false).getVal(); // return estimate of value     
 		}
 		else if (this.terminal) {
 			return 0.0;
@@ -254,7 +270,9 @@ public class UCTNode extends TreeSearchNode{
 		for (int actI = 0; actI < TreeSearchNode.possActions.length; actI++) {
 			
 			/*
-			 * UCB calculation
+			 * UCB calculation: 
+			 * action value = Q(s,a) + confBound, where
+			 * confBound = confConst * [log(visits(s) / visits(s,a))]^2
 			 */
 			
 			double actVal= this.qFunction.predictLabel(obs, TreeSearchNode.possActions[actI]);

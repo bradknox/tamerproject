@@ -527,7 +527,7 @@ public class DPAgent extends GeneralAgent {
 		this.inTrainSess = !this.inTrainSess;
 	}
 	
-	private Action[] getPossibleActions(){
+	public Action[] getPossibleActions(){
 		ArrayList<Action> possActionsList = (new FeatGen_NoChange(this.theObsIntRanges, this.theObsDoubleRanges, 
 				this.theActIntRanges, this.theActDoubleRanges)).getPossActions(null);
 		Action[] possActionsArray = new Action[possActionsList.size()];
@@ -557,7 +557,7 @@ public class DPAgent extends GeneralAgent {
 		return nonTermLegalObsArray;
 	}
 	
-	private Observation[] getLegalObservations(){
+	public Observation[] getLegalObservations(){
 		ArrayList<int[]> possObsIntArrays = getPossObsIntArrays();
 		ArrayList<Observation> possObsList = new ArrayList<Observation>();
 		
@@ -634,7 +634,7 @@ public class DPAgent extends GeneralAgent {
 	 * @param act
 	 * @return
 	 */
-	private double getStateActVal(Observation obs, Action act) {
+	public double getStateActVal(Observation obs, Action act) {
 		//System.out.println("act: " + act.intArray[0]);
 		double reward;
 		synchronized(this.rewModelLock) {
