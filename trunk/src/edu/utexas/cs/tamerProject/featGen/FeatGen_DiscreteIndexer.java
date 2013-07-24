@@ -59,7 +59,7 @@ public class FeatGen_DiscreteIndexer extends FeatGenerator{
 		
 		this.maxObsIndex = numPossObservations - 1;
 		
-		this.maxActIndex = FeatGen_DiscreteIndexer.possStaticActions.size() - 1;		
+		this.maxActIndex = this.actList.getActionList().size() - 1;		
 		this.numFeatures = 2; // state index and action index
 //		featCount = new int[this.numFeatures];
 	}
@@ -165,8 +165,8 @@ public class FeatGen_DiscreteIndexer extends FeatGenerator{
 		ArrayList<double[]> randSamples = new ArrayList<double[]>();
 		double[] feats;
 		for (int j = 0; j < numSamples; j++) {
-			int discObsNum =  randGenerator.nextInt(this.maxObsIndex + 1);
-			int actNum = randGenerator.nextInt(this.maxActIndex + 1);
+			int discObsNum =  FeatGenerator.staticRandGenerator.nextInt(this.maxObsIndex + 1);
+			int actNum = FeatGenerator.staticRandGenerator.nextInt(this.maxActIndex + 1);
 			feats = new double[this.numFeatures];
 			feats[0] = discObsNum;
 			feats[1] = actNum;

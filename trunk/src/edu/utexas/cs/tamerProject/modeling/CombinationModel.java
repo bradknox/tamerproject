@@ -42,7 +42,7 @@ public class CombinationModel extends RegressionModel{
 	}
 	
 	public Action getRandomAction(){
-		return this.models.get(0).getFeatGen().getRandomAction();
+		return this.models.get(0).getFeatGen().actList.getRandomAction();
 	}
 ////	public void annealNonPrimaryWts() {
 ////		if (verbose)

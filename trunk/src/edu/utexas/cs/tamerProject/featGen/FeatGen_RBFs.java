@@ -65,7 +65,7 @@ public class FeatGen_RBFs extends FeatGenerator{
 		this.numObsDims = theObsIntRanges.length + theObsDoubleRanges.length;
 		this.means = this.getRBFMeans(this.getTheObsRangesAndSetNormalization(normBounds));
 
-		this.numFeatures = this.means.size() * this.possStaticActions.size();
+		this.numFeatures = this.means.size() * this.actList.getActionList().size();
 //		System.out.println("numFeatures: " + this.numFeatures);
 //		System.out.print("RBF Means:  ");
 //		for (double[] mean: this.means) {
@@ -149,7 +149,7 @@ public class FeatGen_RBFs extends FeatGenerator{
 	public void setBiasFeatPerAct(double val) {
 		this.addBiasFeatPerAct = true;
 		this.biasFeatVal =  val;
-		this.numFeatures = (this.means.size() + (addBiasFeatPerAct?1:0)) * this.possStaticActions.size();
+		this.numFeatures = (this.means.size() + (addBiasFeatPerAct?1:0)) * this.actList.getActionList().size();
 	}
 	
 	private double[] getStateVars(int[] intStateVars, double[] doubleStateVars) {
@@ -270,7 +270,7 @@ public class FeatGen_RBFs extends FeatGenerator{
 			maxPossFeats[i] = 1.0;
 		}
 		if (addBiasFeatPerAct) {
-			for (int actI = 0; actI < FeatGenerator.possStaticActions.size(); actI++) {
+			for (int actI = 0; actI < this.actList.getActionList().size(); actI++) {
 				maxPossFeats[((this.means.size() + 1) * (actI + 1)) - 1] = this.biasFeatVal;
 			}
 		}
@@ -279,7 +279,7 @@ public class FeatGen_RBFs extends FeatGenerator{
 	public double[] getMinPossFeats(){
 		double[] minPossFeats = new double[this.numFeatures];
 		if (addBiasFeatPerAct) {
-			for (int actI = 0; actI < FeatGenerator.possStaticActions.size(); actI++) {
+			for (int actI = 0; actI < this.actList.getActionList().size(); actI++) {
 				minPossFeats[((this.means.size() + 1) * (actI + 1)) - 1] = this.biasFeatVal;
 			}
 		}
