@@ -197,8 +197,8 @@ public class FeatGen_Discretize extends FeatGenerator{
 		ArrayList<double[]> randSamples = new ArrayList<double[]>();
 		double[] feats;
 		for (int j = 0; j < numSamples; j++) {
-			int discObsNum = (int)(this.numObsFeats * randGenerator.nextDouble());
-			int actNum = (int)(this.numActions * randGenerator.nextDouble());
+			int discObsNum = (int)(this.numObsFeats * FeatGenerator.staticRandGenerator.nextDouble());
+			int actNum = (int)(this.numActions * FeatGenerator.staticRandGenerator.nextDouble());
 			feats = getSAFeatsFromIndices(discObsNum, actNum);
 			randSamples.add(feats);
 		}

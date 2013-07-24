@@ -220,7 +220,7 @@ public class ImitationAgent extends TamerAgent{
 				if (this.lastUserActI == -1)
 					this.lastUserActI = 0; //// assuming 0 is an okay default action
 				// lastUserActI now set
-				this.currObsAndAct.setAct(FeatGenerator.possStaticActions.get(this.lastUserActI));
+				this.currObsAndAct.setAct(this.featGen.actList.getActionList().get(this.lastUserActI));
 				this.lastObsAndAct.setAct(this.currObsAndAct.getAct().duplicate()); //TODO this makes the current and last acts the same... check if there's a good reason for this
 //				System.out.print("model's action overridden by user. ");
 			}
@@ -241,7 +241,7 @@ public class ImitationAgent extends TamerAgent{
 	protected void processPrevTimeStep(double borderTime){ // if this does RL, it will need more: the observation and last reward
 		if (inTrainSess && this.lastUserActI != -1) {
 //			System.out.print("LbD update  ");
-			for (Action act: FeatGenerator.possStaticActions) {
+			for (Action act: this.featGen.actList.getActionList()) {
 				int[] actIntArray = act.intArray;
 				double label = (Arrays.equals(this.lastObsAndAct.getAct().intArray,actIntArray)) ? 1.0 : 0.0;
 //				System.out.println("---Arrays.equals(this.lastAct.intArray,actIntArray): " + Arrays.equals(this.lastAct.intArray,actIntArray));

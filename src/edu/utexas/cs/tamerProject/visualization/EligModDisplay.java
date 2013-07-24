@@ -76,7 +76,7 @@ public class EligModDisplay extends JPanel implements ActionListener{
 		/*
 		 * Draw H-hat influence and eligibility traces for each action
 		 */
-		int numActions = this.agent.featGen.possStaticActions.size();
+		int numActions = this.agent.featGen.actList.size();
 		Action a = new Action();
 		a.intArray = new int[1];
 		for (int actNum = 0; actNum < numActions; actNum++) {

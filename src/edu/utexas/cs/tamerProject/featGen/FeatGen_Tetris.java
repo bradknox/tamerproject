@@ -70,18 +70,18 @@ public class FeatGen_Tetris extends FeatGenerator{
 		this.getSFeats(obs);
 		//gameState.printStateWCurrentPiece();
 		ArrayList<ExtendedTetrisAction> extendedActions = this.getExtendedActList(obs.intArray);
-		FeatGen_Tetris.possStaticActions = new ArrayList<Action>();
+		this.actList.clearActionList();
 		for (ExtendedTetrisAction extendedAction: extendedActions) {
 			Action thisExtAction = new Action();
 			thisExtAction.intArray = extendedAction.actList;
-			FeatGen_Tetris.possStaticActions.add(thisExtAction);
+			this.actList.addActionToList(thisExtAction);
 		}
-		if (FeatGen_Tetris.possStaticActions.size() == 0) {
+		if (this.actList.getActionList().size() == 0) {
 			System.err.println("Zero actions returned by Tetris state. Check that the modified Tetris, " +
 					"which communicates the full state, is being used (not the RL-Library version).");
 			System.exit(1);
 		}
-		return FeatGen_Tetris.possStaticActions;
+		return this.actList.getActionList();
 	}
 	
 	

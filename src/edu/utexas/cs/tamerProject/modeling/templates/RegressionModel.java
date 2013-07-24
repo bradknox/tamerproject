@@ -86,7 +86,7 @@ public abstract class RegressionModel implements ObsActModel{
 	}
 
 	public Action getRandomAction(){
-		return this.featGen.getRandomAction();
+		return this.featGen.actList.getRandomAction();
 	}
 	public boolean noRealValFeats(){
 		return (this.featGen.theActDoubleRanges.length == 0);

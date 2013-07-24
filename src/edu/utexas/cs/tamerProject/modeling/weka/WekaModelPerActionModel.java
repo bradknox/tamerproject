@@ -6,6 +6,7 @@ import java.util.Arrays;
 import edu.utexas.cs.tamerProject.modeling.Sample;
 import edu.utexas.cs.tamerProject.modeling.templates.RegressionModel;
 import edu.utexas.cs.tamerProject.modeling.weka.WekaRegressor;
+import edu.utexas.cs.tamerProject.actSelect.ActionList;
 import edu.utexas.cs.tamerProject.featGen.FeatGenerator;
 
 public class WekaModelPerActionModel extends RegressionModel{
@@ -47,7 +48,7 @@ public class WekaModelPerActionModel extends RegressionModel{
 	// returns the action number; useful when there is more than one action feature
 	private int getActI(double[] feats){
 		int[] actFeats = getActFeats(feats);
-		return FeatGenerator.getActIntIndex(actFeats, FeatGenerator.possStaticActions);
+		return ActionList.getActIntIndex(actFeats, this.featGen.actList.getActionList());
 //		
 //		int actI = 0;
 //		int multiplicand = 1;

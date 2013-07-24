@@ -22,8 +22,8 @@ public class TamerPanel extends RLPanel {
 
 	final double FEEDBACK_FLASH_TIME = 0.10;  // in seconds
 	public static boolean DISPLAY_TRAINING = true;
-	double timeOfLastFeedback = Double.MIN_VALUE;
-	double lastFeedback = 0;
+	private double timeOfLastFeedback = Double.MIN_VALUE;
+	private double lastFeedback = 0;
 	boolean demoActionTaken = false;
 	boolean shouldFlash = false;
 	boolean demoMode = false;
@@ -92,7 +92,7 @@ public class TamerPanel extends RLPanel {
 	    						(int)(0.10 * this.getHeight()) + (int)(0.2 * g.getFontMetrics().getHeight()));
 	    			}
 		    		if (currTime - this.timeOfLastFeedback < FEEDBACK_FLASH_TIME ) {
-		    			System.out.println(demoMode+" "+demoActionTaken);
+		    			//System.out.println("demoMode? " + demoMode+"; demoActionTaken? "+demoActionTaken);
 		    			if(shouldFlash){
 			    			//System.out.println("flash");
 			    			//System.out.flush();
@@ -157,7 +157,7 @@ public class TamerPanel extends RLPanel {
 		super.keyPressed(e);
 		sendKeyToAgent(e.getKeyChar());
 
-		System.out.println("key pressed in TamerPanel: " + e.getKeyChar());
+		//System.out.println("key pressed in TamerPanel: " + e.getKeyChar());
 		if (e.getKeyChar() == 'z' || e.getKeyChar() == 'k') {
 			this.showNegRew();
 		}

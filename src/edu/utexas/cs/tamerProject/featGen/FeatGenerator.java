@@ -7,6 +7,7 @@ import java.util.Random;
 import org.rlcommunity.rlglue.codec.types.Action;
 import org.rlcommunity.rlglue.codec.types.Observation;
 
+import edu.utexas.cs.tamerProject.actSelect.ActionList;
 import edu.utexas.cs.tamerProject.modeling.templates.RegressionModel;
 
 /**
@@ -24,15 +25,16 @@ import edu.utexas.cs.tamerProject.modeling.templates.RegressionModel;
 public abstract class FeatGenerator{
 	
 	protected boolean verbose = false;
-	public Random randGenerator = new Random();
-	public static final Random staticRandGenerator = new Random();
+//	public Random randGenerator = new Random();
+	public static Random staticRandGenerator = new Random();
 	public int[][] theObsIntRanges;
 	public double[][] theObsDoubleRanges; 
 	public int[][] theActIntRanges;
 	public double[][] theActDoubleRanges;
 	//public static ArrayList<int[]> possActIntArrays;
-	public static ArrayList<Action> possStaticActions = new ArrayList<Action>();;
-	public static ArrayList<Action> forbiddenActions = new ArrayList<Action>();
+//	public static ArrayList<Action> possStaticActions = new ArrayList<Action>();
+//	public static ArrayList<Action> forbiddenActions = new ArrayList<Action>();
+	public final ActionList actList;
 
 	////protected RegressionModel model;
 	protected int numFeatures;
@@ -48,14 +50,16 @@ public abstract class FeatGenerator{
 		this.theActDoubleRanges = theActDoubleRanges;
 		this.theObsIntRanges = theObsIntRanges;
 		this.theObsDoubleRanges = theObsDoubleRanges;
+		this.actList = new ActionList(theObsIntRanges, theObsDoubleRanges, 
+									theActIntRanges, theActDoubleRanges); // could be initialized earlier if need be and passed to FeatGenerator's constructor
 		//FeatGenerator.possActIntArrays = getPossActIntArrays();
-		ArrayList<int[]> possActIntArrays = this.recurseForPossActIntArrays(new int[0]);//getPossActIntArrays();
-		possStaticActions.clear();
-		for (int[] possActIntArray: possActIntArrays){
-			Action possStaticAction = new Action();
-			possStaticAction.intArray = possActIntArray;
-			possStaticActions.add(possStaticAction);
-		}
+//		ArrayList<int[]> possActIntArrays = this.recurseForPossActIntArrays(new int[0]);//getPossActIntArrays();
+//		possStaticActions.clear();
+//		for (int[] possActIntArray: possActIntArrays){
+//			Action possStaticAction = new Action();
+//			possStaticAction.intArray = possActIntArray;
+//			possStaticActions.add(possStaticAction);
+//		}
 	}
 
 
@@ -64,13 +68,8 @@ public abstract class FeatGenerator{
 	public void setFeatSource(String source) {
 		this.featSource = source;
 	}
-	public static void forbidAction(Action act){System.out.println("Forbidding action " + act); forbiddenActions.add(act);}
-	public static void allowAction(Action act){
-		if (!forbiddenActions.remove(act)) {
-			System.out.println("Attempted to allow an action that wasn't forbidden.");
-		}
-	}
-	public void setRandSeed(long seed) {this.randGenerator = new Random(seed);}
+
+	public void setRandSeed(long seed) {FeatGenerator.staticRandGenerator = new Random(seed);}
 	public int getNumFeatures() {return this.numFeatures;}
 	public abstract int[] getActionFeatIndices(); // when applicable, this tells which features in the returned double[] indicate the action taken
 	public abstract int[] getNumFeatValsPerFeatI();
@@ -128,18 +127,7 @@ public abstract class FeatGenerator{
 	}
 
 
-	public Action getRandomAction(){
-		int actI;
-		do {actI = this.randGenerator.nextInt(FeatGenerator.possStaticActions.size());}
-		while(FeatGenerator.forbiddenActions.contains(FeatGenerator.possStaticActions.get(actI)));
-		return FeatGenerator.possStaticActions.get(actI).duplicate();
-	}
-	public int[] getRandomActIntArray(){
-		int actI;
-		do {actI = this.randGenerator.nextInt(FeatGenerator.possStaticActions.size());}
-		while(FeatGenerator.forbiddenActions.contains(FeatGenerator.possStaticActions.get(actI)));
-		return FeatGenerator.possStaticActions.get(actI).intArray.clone();
-	}
+
 	public ArrayList<double[]> genRandomFeats(int numSamples){
 		ArrayList<double[]> randSamples = new ArrayList<double[]>();
 		Observation o;
@@ -147,7 +135,7 @@ public abstract class FeatGenerator{
 		double[] feats;
 		for (int j = 0; j < numSamples; j++) {
 			o = getRandomObs();
-			a.intArray = getRandomActIntArray();
+			a.intArray = this.actList.getRandomActIntArray();
 			feats = getFeats(o, a);
 			randSamples.add(feats);
 		}
@@ -169,8 +157,8 @@ public abstract class FeatGenerator{
 	
 	public ArrayList<Action> getPossActions(Observation obs) {
 		ArrayList<Action> possActionDupes = new ArrayList<Action>();
-		for (Action a: FeatGenerator.possStaticActions) {
-			if (!FeatGenerator.forbiddenActions.contains(a))
+		for (Action a: this.actList.getActionList()) {
+			if (!this.actList.getForbiddenActionList().contains(a))
 				possActionDupes.add(a.duplicate());
 			else
 				System.out.println("A forbidden action has been ignored.");
@@ -185,63 +173,46 @@ public abstract class FeatGenerator{
 	 * TODO Fix: If this is used anywhere but in this class's constructor, forbidden actions will 
 	 * not be reflected.
 	 */
-	protected ArrayList<int[]> recurseForPossActIntArrays(int[] actSoFar){
-		if (actSoFar.length ==  this.theActIntRanges.length) { // base case
-			ArrayList<int[]> list = new ArrayList<int[]>();
-			list.add(actSoFar);
-			return list;
-		}
-		int currActIndex = actSoFar.length;
-		int a = this.theActIntRanges[currActIndex][1];
-		int b = this.theActIntRanges[currActIndex][0];
-		int numPossibleValues = (this.theActIntRanges[currActIndex][1] 
-		                          - this.theActIntRanges[currActIndex][0]) + 1;
-		ArrayList<int[]> fullActs = new ArrayList<int[]>();
-		// iterate through all possible values of the next action integer
-		for (int i = 0; i < numPossibleValues; i++){
-			int currVal = theActIntRanges[currActIndex][0] + i;
-			int[] newActSoFar = new int[currActIndex + 1];
-			for (int j = 0; j < actSoFar.length; j++){
-				newActSoFar[j] = actSoFar[j];
-			}
-			newActSoFar[currActIndex] = currVal;
-			fullActs.addAll(this.recurseForPossActIntArrays(newActSoFar));
-		}
-		return fullActs;
-	}
-	
+//	protected ArrayList<int[]> recurseForPossActIntArrays(int[] actSoFar){
+//		if (actSoFar.length ==  this.theActIntRanges.length) { // base case
+//			ArrayList<int[]> list = new ArrayList<int[]>();
+//			list.add(actSoFar);
+//			return list;
+//		}
+//		int currActIndex = actSoFar.length;
+//		int a = this.theActIntRanges[currActIndex][1];
+//		int b = this.theActIntRanges[currActIndex][0];
+//		int numPossibleValues = (this.theActIntRanges[currActIndex][1] 
+//		                          - this.theActIntRanges[currActIndex][0]) + 1;
+//		ArrayList<int[]> fullActs = new ArrayList<int[]>();
+//		// iterate through all possible values of the next action integer
+//		for (int i = 0; i < numPossibleValues; i++){
+//			int currVal = theActIntRanges[currActIndex][0] + i;
+//			int[] newActSoFar = new int[currActIndex + 1];
+//			for (int j = 0; j < actSoFar.length; j++){
+//				newActSoFar[j] = actSoFar[j];
+//			}
+//			newActSoFar[currActIndex] = currVal;
+//			fullActs.addAll(this.recurseForPossActIntArrays(newActSoFar));
+//		}
+//		return fullActs;
+//	}
+//	
 	public int getActIntIndex(int[] actIntArray){
-		return FeatGenerator.getActIntIndex(actIntArray, FeatGenerator.possStaticActions);
+		return ActionList.getActIntIndex(actIntArray, this.actList.getActionList());
 	}
-	public static int getActIntIndex(int[] actIntArray, ArrayList<Action> possStaticActions){
-		int i = 0;
-		while (i < possStaticActions.size()) {
-			if (Arrays.equals(possStaticActions.get(i).intArray, actIntArray))
-				break;
-			i++;
-		}
-		if (i == possStaticActions.size()) {
-			System.err.println("\n\nNo act match found for act int array: " + Arrays.toString(actIntArray));
-			System.err.print("Possible act int arrays to match: ");
-			for (Action act: possStaticActions)
-				System.err.print("  " + Arrays.toString(act.intArray));
-			System.err.println("Stack:\n" + Arrays.toString(Thread.currentThread().getStackTrace()));
-			System.err.println("Killing agent process\n\n");
-			System.exit(1);
-		}
-		return i;
-	}
+
 	
-	public double getRandomVal(double inclLowerBound, double inclUpperBound, boolean isInt) {
+	public static double getRandomVal(double inclLowerBound, double inclUpperBound, boolean isInt) {
 		double randVal;
 		if (isInt) {
 			int numPossVals = (int)((inclUpperBound - inclLowerBound) + 1);
-			int unshiftedVal = randGenerator.nextInt(numPossVals);
+			int unshiftedVal = staticRandGenerator.nextInt(numPossVals);
 			randVal = (unshiftedVal + inclLowerBound);
 		}
 		else {
 			double rangeFactor = inclUpperBound - inclLowerBound;
-			double unshiftedVal = randGenerator.nextDouble() * rangeFactor;
+			double unshiftedVal = staticRandGenerator.nextDouble() * rangeFactor;
 			randVal = (unshiftedVal + inclLowerBound);
 		}
 		return randVal;
