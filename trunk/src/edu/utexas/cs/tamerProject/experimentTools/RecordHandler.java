@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -52,6 +53,7 @@ public class RecordHandler{
 	public String rewRecord = "";
 	public String recordPath = "";
 	public boolean canWriteToFile = true;
+	public static boolean usePathAsURL = false; // use the path variable sent to loadRecord() as a URL at which to download log files
 	public static int recordLength = 8;
 	public static boolean canAccessDrive = true;
 	
@@ -74,7 +76,13 @@ public class RecordHandler{
 				this.timeStepStrs = RecordHandler.getStrArray(path);
 			}
 			else {
-				InputStream in = getClass().getResourceAsStream(path); 
+				InputStream in = null;
+				if(usePathAsURL){
+					in = new URL(path).openStream();
+				}
+				else{
+					in = getClass().getResourceAsStream(path); 
+				}
 				InputStreamReader isr = new InputStreamReader(in);
 				BufferedReader br = new BufferedReader(isr);
 				this.timeStepStrs = RecordHandler.getStrArray(br);
@@ -88,6 +96,28 @@ public class RecordHandler{
 			System.exit(0);
 		}
 	}
+
+	
+//	public void loadRecord(String path){
+//		try {
+//			if (RecordHandler.canAccessDrive) {
+//				this.timeStepStrs = RecordHandler.getStrArray(path);
+//			}
+//			else {
+//				InputStream in = getClass().getResourceAsStream(path); 
+//				InputStreamReader isr = new InputStreamReader(in);
+//				BufferedReader br = new BufferedReader(isr);
+//				this.timeStepStrs = RecordHandler.getStrArray(br);
+//			}
+//			this.currStepLineI = RecordHandler.firstDataLine;
+//			this.recordPath = path;
+//		}
+//		catch (Exception e){
+//			System.err.println("Error: " + e.getMessage() + " for path " + path + ".\nExiting.");
+//			e.printStackTrace();
+//			System.exit(0);
+//		}
+//	}
 	
 	/**
 	 * Allows an observation-action pair to be set as indicators of an episode ending,
