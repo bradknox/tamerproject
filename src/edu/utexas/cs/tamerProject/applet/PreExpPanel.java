@@ -56,6 +56,8 @@ public class PreExpPanel extends JPanel
 	private String subPrompt = "(Copy-and-pasting will not work.)";
 	private int promptSize = 20;
 	int cnt = 0;
+
+	public static TrainerUniqueChkr uniqueChecker = new TrainerUniqueChkr();
 	
 	public boolean isHITReadyForStart() {
 		return (this.prevHITFinished && this.hitIDGiven);
@@ -156,12 +158,13 @@ public class PreExpPanel extends JPanel
 		
 		if (!this.isHITReadyForStart() && !hitIDGiven) {
 			if (e.getKeyCode() == e.VK_ENTER) {
-				if (this.hitID.replaceAll("[^0-9]", "").length() > 0)
+				if (uniqueChecker.checkUnique(this.hitID)){
 					this.hitIDGiven = true;
+				}
 				else {
 					this.hitID = "";
-					topPrompt = "HIT ID must contain a number.";
-					bottomPrompt = "Try again: ";
+					topPrompt = "HIT ID incorrect.";
+					bottomPrompt = "Please try again: ";
 				}
 			}
 			else if (e.getKeyCode() == e.VK_BACK_SPACE) {
