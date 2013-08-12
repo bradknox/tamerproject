@@ -289,7 +289,7 @@ public class TamerRLAgent extends GeneralAgent implements AgentInterface {
     	System.out.println("this.recordRew: " + this.recordRew);
     	if (!this.recordRew)
     		enableGUI = false;
-		if (!GeneralAgent.isApplet && enableGUI) {
+		if (enableGUI) {
 			try{ 		//Schedule a job for event dispatch thread
 		        javax.swing.SwingUtilities.invokeLater(new Runnable() {
 						public void run() { TrainerListener.createAndShowGUI(TamerRLAgent.this); }

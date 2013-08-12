@@ -419,11 +419,10 @@ public class CreditAssign{
 									// should equal hReward at end...
 		for (int i = 0; i < this.timeStepsInWindow.size(); i++) {
 			double credit = getCredit(hRewTime, i, getStepsBeforeCurrent(i));
-			//println("credit: " + credit);
 			double rewardShare = hReward * credit;
 			totalRewardShare += rewardShare;
 			SampleWithObsAct sample = this.activeSamples.get(i);
-			///println("Credit " + credit + " given to sample:\n" + sample);
+			//println("Credit " + credit + " given to sample:\n" + sample.debugString());
 			sample.unweightedRew += rewardShare;
 			sample.usedCredit = Math.max(getCreditPastElig(i, getStepsBeforeCurrent(i), hRewTime), sample.usedCredit);			
 			sample.label = sample.unweightedRew;

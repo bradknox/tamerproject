@@ -226,7 +226,7 @@ public class AsynchDPAgent extends GeneralAgent {
 		}
 		
 		
-		if (!GeneralAgent.isApplet && enableGUI) {
+		if (enableGUI) {
 			//Schedule a job for event dispatch thread:
 	        //creating and showing this application's GUI.
 	        javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -237,7 +237,7 @@ public class AsynchDPAgent extends GeneralAgent {
 		}
 		else {
 			System.out.println("No " + this.getClass().getSimpleName() + " GUI for you!");
-			System.out.println("GeneralAgent.isApplet: " + GeneralAgent.isApplet);
+			//System.out.println("GeneralAgent.isApplet: " + GeneralAgent.isApplet);
 			System.out.println("enableGUI: " + enableGUI);
 		}
 		

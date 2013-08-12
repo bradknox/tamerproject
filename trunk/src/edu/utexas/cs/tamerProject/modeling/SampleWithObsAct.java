@@ -1,5 +1,7 @@
 package edu.utexas.cs.tamerProject.modeling;
 
+import java.util.Arrays;
+
 import org.rlcommunity.rlglue.codec.types.Action;
 import org.rlcommunity.rlglue.codec.types.Observation;
 
@@ -59,6 +61,34 @@ public class SampleWithObsAct extends Sample{
 		Sample cloneSampleNoOA = super.clone();
 		SampleWithObsAct cloneSample = new SampleWithObsAct(cloneSampleNoOA, this.obs.duplicate(), this.act.duplicate());
 		return cloneSample;
+	}
+	
+	public String toString(){
+		String s = "\n";
+		s += "obs: " + this.obs + "\n";
+		s += "act: " + this.act + "\n";
+		s += "feats: " + Arrays.toString(feats) + "\n";
+		s += "label: " + label + "\n";
+		s += "unweighted reward: " + unweightedRew + "\n";
+		s += "weight: " + weight + "\n";
+		s += "creditUsedLastStep: " + creditUsedLastStep + "\n";
+		s += "usedCredit: " + usedCredit + "\n";
+		s += "unique: " + unique + "\n";
+		return s;
+	}
+	
+	public String debugString(){
+		String s = "\n";
+		s += "obs: " + Arrays.toString(this.obs.intArray) + "\n";
+		s += "act: " + Arrays.toString(this.act.intArray) + "\n";
+		//s += "feats: " + Arrays.toString(feats) + "\n";
+		s += "label: " + label + "\n";
+		s += "unweighted reward: " + unweightedRew + "\n";
+		s += "weight: " + weight + "\n";
+		s += "creditUsedLastStep: " + creditUsedLastStep + "\n";
+		s += "usedCredit: " + usedCredit + "\n";
+		s += "unique: " + unique + "\n";
+		return s;
 	}
 	
 }

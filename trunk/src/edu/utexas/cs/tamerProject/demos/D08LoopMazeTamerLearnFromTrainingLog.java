@@ -24,13 +24,9 @@ import edu.utexas.cs.tamerProject.applet.RunLocalExperiment;
 import edu.utexas.cs.tamerProject.applet.TamerApplet;
 
 /**
- * This class runs a TAMER agent and is the first to demo in this series 
- * to feature human interaction. 
- * 
- * In addition to the controls that worked before (when enabled), you
- * can now give reward. '/' key gives +1. 'z' key gives -1. Also, the
- * space bar turns training on and off (i.e., the agent will only update
- * its reward model when training is on).
+ * This class uses a log from a previous training session with a TAMER 
+ * agent to train the agent, making it start with the knowledge from the
+ * experience gained in the previous session.
  * 
  * @author bradknox
  *
@@ -61,7 +57,18 @@ public class D08LoopMazeTamerLearnFromTrainingLog extends TamerApplet {
 		 *  
 		 *  Example: agent.params.stepSize = 0.5;
 		 */
+		agent.params.modelClass = "IncGDLinearModel";
+		agent.params.featClass = "FeatGen_RBFs";
+		agent.params.featGenParams.put("basisFcnsPerDim", "6");
+		agent.params.featGenParams.put("relWidth", "0.05");
+		agent.params.stepSize = 0.2;
+		agent.params.featGenParams.put("biasFeatVal", "0.1");
 		
+		// credit assignment parameters
+		agent.params.distClass = "uniform"; //// immediate, previousStep, or uniform
+		agent.params.creditDelay = 0.15; // these bounds are because the typical event being reward is the action shown at the beginning of the step
+		agent.params.windowSize = 0.25;
+		agent.params.extrapolateFutureRew = false;
 		
 		/*
 		 * Instantiate the environment

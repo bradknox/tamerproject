@@ -85,23 +85,19 @@ public abstract class GeneralAgent implements AgentInterface{
     public String envName;
     
     //// recent experience
-//	protected Action action;
 	public volatile ObsAndAct currObsAndAct;
-//	public Action lastAct;
-//	public Observation lastObs;
 	public ObsAndAct lastObsAndAct;
 	public ArrayList<HRew> hRewList;
 	public ArrayList<HRew> hRewThisStep;
 	public boolean takesHRew = true;
-//	public double hRewCounter;
-//	public double hRewThisStep;
 	protected double stepStartTime;
 	protected double lastStepStartTime;
 	public static boolean duringStepTransition = false;
 
 	protected boolean isTopLevelAgent = true; // false when an agent object is a member of another agent object. 
-	public static boolean isApplet = false;
+	//public static boolean isApplet = false;
 	public static boolean canWriteToFile = false; // set to true to allow logging to local file system
+	public static boolean canWriteViaPHP = false; // set to true to allow logging to a server via PHP (must be set up in TamerApplet by setting member variable dataCollectURL)
 	public boolean enableGUI = false; // true enables locally created GUIs
 	
 	protected boolean inTrainSess;
@@ -312,6 +308,7 @@ public abstract class GeneralAgent implements AgentInterface{
 	    		if (agent.recHandler.canWriteToFile) {
 	    			(new File(agent.writeLogDir)).mkdir();
 	    		}
+	    		System.out.println("agent.writeLogPath: " + agent.writeLogPath);
 	    		agent.recHandler.writeParamsToFullLog(agent.writeLogPath, agent.params);
 	    	}
 			if (agent.recordRew) {
@@ -330,7 +327,7 @@ public abstract class GeneralAgent implements AgentInterface{
     		System.out.println("unique: " + unique);
     		
     		if (RLLIBRARY_PATH.equals(""))
-    			RLLIBRARY_PATH = RecordHandler.getPresentWorkingDir();
+    			RLLIBRARY_PATH = RecordHandler.getPresentWorkingDir().replace("/bin", "");
     		//RLLIBRARY_PATH = System.getenv("RLLIBRARY");
     		this.writeLogDir = RLLIBRARY_PATH + "/data/" + this.expName; 
     	
@@ -704,13 +701,13 @@ public abstract class GeneralAgent implements AgentInterface{
     	if (Double.isNaN(r)) {
     		System.err.println("Received NaN in agent_end()");
     	}
-    	this.logStep(this.writeLogPath, null, null, r, this.hRewThisStep, this.stepStartTime);
     	this.totalSteps++; 
     	this.stepsThisEp++;
     	this.totalRew += r;
     	this.rewThisEp += r;
     	this.hRewThisStep = new ArrayList<HRew>(this.hRewList);
     	this.hRewList.clear();
+    	this.logStep(this.writeLogPath, null, null, r, this.hRewThisStep, this.stepStartTime);
     	this.currObsAndAct.setAct(new Action());
 //    	if (!this.isTopLevelAgent)
 //    		System.out.println("rewThisEp in " + this.getClass().getName() + ": " + this.rewThisEp);
