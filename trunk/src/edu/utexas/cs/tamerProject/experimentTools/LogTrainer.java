@@ -151,7 +151,7 @@ public class LogTrainer{
 		//System.out.println("Step ends ep? " + step.endOfEp);
 		if (step.startOfEp) {
 			System.out.print("|");
-			agent.agent_start(step.o, step.timeStamp, step.a);
+			agent.agent_start(step.o.duplicate(), step.timeStamp, step.a.duplicate());
 		}
 		else if (step.endOfEp) {
 			agent.agent_end(step.rew, step.timeStamp);
@@ -161,7 +161,7 @@ public class LogTrainer{
 			}
 		}
 		else {
-			agent.agent_step(step.rew, step.o, step.timeStamp, step.a);
+			agent.agent_step(step.rew, step.o.duplicate(), step.timeStamp, step.a.duplicate());
 		}
 		//System.out.println("end of step training iteration\n");
 	}
