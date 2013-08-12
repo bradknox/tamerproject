@@ -261,7 +261,7 @@ public class RLPanel extends JPanel
 	
 	
 	public void keyPressed( KeyEvent e ) {
-		System.out.println("pressed in rlpanel: " + e.getKeyChar());
+		//System.out.println("pressed in rlpanel: " + e.getKeyChar());
 		boolean stepDurChange = false;
 		if (RLPanel.enableSpeedControls 
 				&& e.getKeyChar() == '+') { // speed up

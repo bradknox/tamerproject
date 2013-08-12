@@ -79,8 +79,10 @@ public class D06LoopMazeTamerManual extends TamerApplet {
 		/*
 		 * Set some agent parameters
 		 */
-		agent.setRecordRew(false); // records predictions of human reward to file
-		agent.setRecordLog(false); // records top-level agent's full experience to log file
+		agent.setRecordRew(false); // records predictions of human reward to file on a hard drive or on a server via PHP
+		agent.setRecordLog(false); // records top-level agent's full experience to log file on a hard drive or on a server via PHP
+		GeneralAgent.canWriteToFile = false; // must be set to true for writing to file
+		GeneralAgent.canWriteViaPHP = false; // must be set to true for writing to PHP
 		agent.envName = "Loop-Maze";	
 		agent.initParams(agent.envName);
 		

@@ -42,6 +42,10 @@ import edu.utexas.cs.tamerProject.utils.Stopwatch;
  * controls the agent and can switch off training at any time to see the learned
  * policy. 
  * 
+ * 
+ * TODO Change implementation details that make agent take two actions at start, 
+ * based on it choosing an action and then pausing.
+ * 
  * @author bradknox
  *
  */
@@ -149,6 +153,16 @@ public class ImitationAgent extends TamerAgent{
 			else if (c == 'l')
 				this.lastUserActI = 2; // accelerate right
 		}
+		else if (this.featGen.actList.size() == 4){
+			if (c == 'j')
+				this.lastUserActI = 1; // left
+			else if (c == 'k')
+				this.lastUserActI = 2; // down
+			else if (c == 'l')
+				this.lastUserActI = 0; // right
+			else if (c == 'i')
+				this.lastUserActI = 3; // up
+		}
 		else {
 			if (c == '/') {
 				this.lastUserActI = this.featGen.theActIntRanges[0][1]; // do the maximum act number
@@ -180,7 +194,7 @@ public class ImitationAgent extends TamerAgent{
 				this.params.selectionParams, this.currObsAndAct.getAct().duplicate());
 		
 		//LogTrainer.trainOnLog("/Users/bradknox/rl-library/data/cartpole_tamer/recTraj-wbknox-tamerOnly-1295030420.488000.log", this);
-		if (!isApplet && enableGUI) {
+		if (enableGUI) {
 			//Schedule a job for event dispatch thread:
 	        //creating and showing this application's GUI.
 	        javax.swing.SwingUtilities.invokeLater(new Runnable() {

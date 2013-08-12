@@ -31,7 +31,6 @@ public class TamerPanel extends RLPanel {
 
 	
 	public void init(AgentInterface agent, EnvironmentInterface env) {
-		GeneralAgent.isApplet = true;
 		super.init(agent, env);
 	}
 	

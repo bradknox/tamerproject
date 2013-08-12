@@ -314,6 +314,8 @@ public class TamerApplet extends RLApplet {
 	}
 
 	public void saveLog() {
+		if (!GeneralAgent.canWriteViaPHP)
+			return;
 		GeneralAgent agent = ((GeneralAgent) this.rlPanel.agent);
 
 		if (agent.getRecordRew()) { // // send reward-only log from
