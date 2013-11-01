@@ -43,7 +43,7 @@ import org.rlcommunity.rlglue.codec.types.Reward_observation_terminal;
  */
 public class RobotArmState {
 
-	public static final int[] worldDims = {20, 20, 20};//{5, 8, 5, 6, 4, 5};
+	public static final int[] worldDims = {20, 20};//{5, 8, 5, 6, 4, 5};
 	
 	public static final Point2D origin = new Point2D.Double(0.5, 1.0);
 	public static final double[] SEG_LENS = {0.3, 0.1, 0.2, 0.1, 0.2, 0.05, 0.05};
