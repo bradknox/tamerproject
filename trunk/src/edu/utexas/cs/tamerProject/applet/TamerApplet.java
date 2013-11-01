@@ -287,7 +287,7 @@ public class TamerApplet extends RLApplet {
 			rlPanel.repaintTimer.stop();
 			TamerApplet.this.requestFocusInWindow();
 			this.getContentPane().remove(rlPanel);
-			rlPanel = null;
+			rlPanel = null; // is this assignment to avoid attempts to save log after experiment is finished?
 
 			postExpPanel = new PostExpPanel();
 			postExpPanel.setIsLastTask(getIsLastTaskFromParams());

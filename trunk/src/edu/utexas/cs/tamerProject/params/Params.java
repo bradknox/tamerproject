@@ -43,10 +43,10 @@ public class Params{
 	
 	//// RegressionModel params
 	public String modelClass = "None";
-	public boolean initModelWSamples = false;
-	public double initSampleValue = 0.0;
-	public int numBiasingSamples = 0;
-	public double biasSampleWt = 0.5;
+	public boolean initModelWSamples = false; // use learning samples to initially bias the model towards a certain constant output
+	public double initSampleValue = 0.0; // constant target value for initial model output 
+	public int numBiasingSamples = 0; // number of sample to use for biasing; higher creates better results but takes longer
+	public double biasSampleWt = 0.5; // if biasing initial model output, this determines the weight of the sample (for learning algs that use weight); for example, this will lower the step size of incremental gradient descent, reducing overshoot 
 	// below this are non-universal params for specific models
 	public double initWtsValue = 0.0; // for models with weights
 	public boolean modelAddsBiasFeat = false; // for linear model, add a feature with value 1 (in model, not in feature selection). (was "modelAddsBiasWt") 
@@ -58,7 +58,7 @@ public class Params{
 	
 	
 	//// ActionSelect params	
-	public String selectionMethod = "e-greedy"; // implemented greedy and e-greedy
+	public String selectionMethod = "e-greedy"; // implemented greedy, e-greedy, vals-as-probs
 	public HashMap<String,String> selectionParams = new HashMap<String,String>();
 	public EnvTransModel envTransModel = null;
 	public ObsActModel envRewModel = null;
@@ -89,7 +89,7 @@ public class Params{
 		featGenParams.put("numBinsPerDim", "10"); // used by FeatGen_Discretize
 		featGenParams.put("basisFcnsPerDim", "41"); //41; used by FeatGen_RBFs
 		featGenParams.put("relWidth", "0.062"); //0.2; used by FeatGen_RBFs
-		featGenParams.put("biasFeatVal", "0.1"); // used by FeatGen_RBFs
+		featGenParams.put("biasFeatVal", "0.1"); // used by FeatGen_RBFs; for most use cases, lowering this value reduces generalization across all states for an action sample
 	}
 	
 	public String toString(){

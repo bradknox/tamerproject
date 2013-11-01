@@ -61,28 +61,28 @@ public class ImitationAgent extends TamerAgent{
 	 * familiarize a trainer with the task before they train. 
 	 */
 	private boolean controlOnly = false; // i.e., no autonomy
-    
-    public static void main(String[] args){
-    	ImitationAgent agent = new ImitationAgent();
-    	agent.processPreInitArgs(args);
-    	if (agent.glue) {
-        	AgentLoader L=new AgentLoader(agent);
-        	L.run();
-    	}
-    	else {
-    		agent.runSelf();
-    	}
-    }  
 
-    public void setControlOnlyBeforeStart(boolean controlOnly) {
-    	this.controlOnly = controlOnly;
-    	if (controlOnly)
-    		this.TRAINING_BY_DEFAULT = true;
-    }
-    public boolean isControlOnly(){
-    	return this.controlOnly;
-    }
-    
+	public static void main(String[] args){
+		ImitationAgent agent = new ImitationAgent();
+		agent.processPreInitArgs(args);
+		if (agent.glue) {
+			AgentLoader L=new AgentLoader(agent);
+			L.run();
+		}
+		else {
+			agent.runSelf();
+		}
+	}  
+
+	public void setControlOnlyBeforeStart(boolean controlOnly) {
+		this.controlOnly = controlOnly;
+		if (controlOnly)
+			this.TRAINING_BY_DEFAULT = true;
+	}
+	public boolean isControlOnly(){
+		return this.controlOnly;
+	}
+
 	public void receiveKeyInput(char c){
 		//System.out.println("Key input rec'd by ImitationAgent: " + c);
 		if (c == ' ' && !this.controlOnly && this.allowUserToggledTraining) {
@@ -90,8 +90,8 @@ public class ImitationAgent extends TamerAgent{
 			this.hLearner.credA.setInTrainSess(Stopwatch.getComparableTimeInSec(), this.inTrainSess);
 		}
 		else if (this.envName.equals("Puddle-World") ||
-			this.envName.equals("Grid-World") ||
-			this.envName.equals("Loop-Maze") ){
+				this.envName.equals("Grid-World") ||
+				this.envName.equals("Loop-Maze") ){
 			if (c == 'j')
 				this.lastUserActI = 1; // left
 			else if (c == 'k')
@@ -123,7 +123,7 @@ public class ImitationAgent extends TamerAgent{
 			else if (c == 'j')
 				this.lastUserActI = 4; // left	
 		}
-		
+
 		else if (this.envName.equals("Mario")){
 			System.out.println("Mario input");
 			if (c == 'j')
@@ -173,10 +173,10 @@ public class ImitationAgent extends TamerAgent{
 		}
 	}
 
-	
+
 	// Called when the environment is loaded (when "Load Experiment" is clicked in RLViz)
-    public void agent_init(String taskSpec) {
-    	this.lastUserActI = -1;
+	public void agent_init(String taskSpec) {
+		this.lastUserActI = -1;
 		GeneralAgent.agent_init(taskSpec, this);
 
 		//// CREATE CreditAssignParamVec
@@ -192,51 +192,49 @@ public class ImitationAgent extends TamerAgent{
 
 		this.actSelector = new ActionSelect(this.model, this.params.selectionMethod, 
 				this.params.selectionParams, this.currObsAndAct.getAct().duplicate());
-		
+
 		//LogTrainer.trainOnLog("/Users/bradknox/rl-library/data/cartpole_tamer/recTraj-wbknox-tamerOnly-1295030420.488000.log", this);
 		if (enableGUI) {
 			//Schedule a job for event dispatch thread:
-	        //creating and showing this application's GUI.
-	        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			//creating and showing this application's GUI.
+			javax.swing.SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
 					TrainerListener.createAndShowGUI(ImitationAgent.this);
 				}
 			});
 		}
-		
+
 		this.endInitHelper();
 	}
 
-    public Action agent_step(double r, Observation o, double startTime, Action predeterminedAct) {
-    	this.stepStartTime = startTime;
-		//// GET BORDER TIME (ends last step and starts new step)
+	public Action agent_step(double r, Observation o, double startTime, Action predeterminedAct) {
+		this.stepStartTime = startTime;
+		/*
+		 * GET TIME STEP BORDER TIME (ends last step and starts new step)
+		 */
 		this.stepStartHelper(r, o);
-        //if (this.stepsThisEp % 500 == 0)
-//		System.out.println("\nAgent on step: " + this.stepsThisEp);
-//
-//		System.out.println("o.intArray: " + Arrays.toString(o.intArray));
-//		System.out.println("o.doubleArray: " + Arrays.toString(o.doubleArray));
+
 		
-		//// PROCESS PREVIOUS TIME STEP
+		/*
+		 * PROCESS PREVIOUS TIME STEP
+		 */
 		if (this.stepsThisEp > 1)
 			processPrevTimeStep(this.stepStartTime);
-		//// GET GREEDY ACTION OR USER ACTION
-		//System.out.println("lastUserActI: " + lastUserActI);
-		//System.out.println("inTrainSess: " + inTrainSess);
-		//System.out.println("predeterminedAct: " + predeterminedAct);
+		
+		/*
+		 * GET GREEDY ACTION OR USER ACTION
+		 */
 		if (predeterminedAct == null) { 
 			this.currObsAndAct.setAct(this.actSelector.selectAction(o, this.lastObsAndAct.getAct()));
 			if (this.inTrainSess) {
 				while (this.lastUserActI == -1 && this.okayToHang) {
-					//System.out.println("Push an action button (j, k, or l) to start");
-					GeneralAgent.sleep(500); // pause for 1/2 of a second
+					GeneralAgent.sleep(250); // pause for 1/4 of a second
 				}
 				if (this.lastUserActI == -1)
 					this.lastUserActI = 0; //// assuming 0 is an okay default action
 				// lastUserActI now set
 				this.currObsAndAct.setAct(this.featGen.actList.getActionList().get(this.lastUserActI));
 				this.lastObsAndAct.setAct(this.currObsAndAct.getAct().duplicate()); //TODO this makes the current and last acts the same... check if there's a good reason for this
-//				System.out.print("model's action overridden by user. ");
 			}
 		}
 		else {
@@ -244,25 +242,27 @@ public class ImitationAgent extends TamerAgent{
 			this.currObsAndAct.setAct(predeterminedAct);
 		}
 
+		/*
+		 * RECORD-KEEPING
+		 */
 		this.lastStepStartTime = this.stepStartTime;
 		this.stepEndHelper(r, o);
-//		System.out.println("act chosen: " + this.action.intArray[0]);
-        return this.currObsAndAct.getAct();
-    }
+		return this.currObsAndAct.getAct();
+	}
 
 
 
 	protected void processPrevTimeStep(double borderTime){ // if this does RL, it will need more: the observation and last reward
 		if (inTrainSess && this.lastUserActI != -1) {
-//			System.out.print("LbD update  ");
+			//			System.out.print("LbD update  ");
 			for (Action act: this.featGen.actList.getActionList()) {
 				int[] actIntArray = act.intArray;
 				double label = (Arrays.equals(this.lastObsAndAct.getAct().intArray,actIntArray)) ? 1.0 : 0.0;
-//				System.out.println("---Arrays.equals(this.lastAct.intArray,actIntArray): " + Arrays.equals(this.lastAct.intArray,actIntArray));
-//				System.out.println("this.lastAct.intArray: " + this.lastAct.intArray);
-//				System.out.println("actIntArray: " + actIntArray);
+				//				System.out.println("---Arrays.equals(this.lastAct.intArray,actIntArray): " + Arrays.equals(this.lastAct.intArray,actIntArray));
+				//				System.out.println("this.lastAct.intArray: " + this.lastAct.intArray);
+				//				System.out.println("actIntArray: " + actIntArray);
 				double[] feats = this.featGen.getSAFeats(this.lastObsAndAct.getObs(), act);
-//				System.out.println("label: " + label);
+				//				System.out.println("label: " + label);
 				//System.out.println("state-action feats from last step: " + Arrays.toString(feats));
 				this.model.addInstance(new Sample(feats, label, 1.0));
 			}
@@ -270,9 +270,9 @@ public class ImitationAgent extends TamerAgent{
 		}		
 
 	}
-		
-    public void agent_end(double reward, double time) {
-    	super.agent_end(reward, time);
+
+	public void agent_end(double reward, double time) {
+		super.agent_end(reward, time);
 		if (this.stepsThisEp > 1)	//// PROCESS PREVIOUS TIME STEP
 			processPrevTimeStep(this.stepStartTime);
 		this.lastUserActI = -1;
@@ -285,24 +285,24 @@ public class ImitationAgent extends TamerAgent{
  */
 class DetailsProvider implements hasVersionDetails {
 
-    public String getName() {
-        return "General Imitation Agent";
-    }
+	public String getName() {
+		return "General Imitation Agent";
+	}
 
-    public String getShortName() {
-        return "Imitation Agent";
-    }
+	public String getShortName() {
+		return "Imitation Agent";
+	}
 
-    public String getAuthors() {
-        return "Brad Knox";
-    }
+	public String getAuthors() {
+		return "Brad Knox";
+	}
 
-    public String getInfoUrl() {
-        return "http://www.cs.utexas.edu/~bradknox";
-    }
+	public String getInfoUrl() {
+		return "http://www.cs.utexas.edu/~bradknox";
+	}
 
-    public String getDescription() {
-        return "RL-Library Java Version of a general imitation (LfD) agent, which bootstraps off of the TAMER code..";
+	public String getDescription() {
+		return "RL-Library Java Version of a general imitation (LfD) agent, which bootstraps off of the TAMER code..";
 	}
 }
 
