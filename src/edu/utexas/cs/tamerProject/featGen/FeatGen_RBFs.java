@@ -59,7 +59,7 @@ public class FeatGen_RBFs extends FeatGenerator{
 		this.basisFcnsPerDim = basisFcnsPerDim;
 		this.relWidth = (double)relWidth;
 //		this.width = relWidth / (basisFcnsPerDim - 1); // features are normalized between zero and one
-		double[] normBounds = {0, 1}; // features are normalized between zero and one by default
+		double[] normBounds = {0, 1}; // by default, observations are normalized between zero and one before being input into the RBF
 		this.width = (normBounds[1] - normBounds[0]) * this.relWidth / (basisFcnsPerDim - 1); 
 		System.out.println("width: " + width);
 		this.numObsDims = theObsIntRanges.length + theObsDoubleRanges.length;

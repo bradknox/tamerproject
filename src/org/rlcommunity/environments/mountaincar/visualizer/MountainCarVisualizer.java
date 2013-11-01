@@ -75,18 +75,18 @@ public class MountainCarVisualizer extends AbstractVisualizer implements ValueFu
     }
 
     protected void setupVizComponents() {
-        theValueFunction = new ValueFunctionVizComponent(this, theControlTarget, this.getTheGlueState());
-        theAgentOnValueFunction = new AgentOnValueFunctionVizComponent(this, this.getTheGlueState());
+        //theValueFunction = new ValueFunctionVizComponent(this, theControlTarget, this.getTheGlueState());
+        //theAgentOnValueFunction = new AgentOnValueFunctionVizComponent(this, this.getTheGlueState());
         SelfUpdatingVizComponent mountain = new MountainVizComponent(this);
         SelfUpdatingVizComponent carOnMountain = new CarOnMountainVizComponent(this);
-        SelfUpdatingVizComponent scoreComponent = new GenericScoreComponent(this);
+        //SelfUpdatingVizComponent scoreComponent = new GenericScoreComponent(this);
 
-        super.addVizComponentAtPositionWithSize(theValueFunction, 0, .5, 1.0, .5);
-        super.addVizComponentAtPositionWithSize(theAgentOnValueFunction, 0, .5, 1.0, .5);
+        //super.addVizComponentAtPositionWithSize(theValueFunction, 0, .5, 1.0, .5);
+        //super.addVizComponentAtPositionWithSize(theAgentOnValueFunction, 0, .5, 1.0, .5);
 
-        super.addVizComponentAtPositionWithSize(mountain, 0, 0, 1.0, .5);
-        super.addVizComponentAtPositionWithSize(carOnMountain, 0, 0, 1.0, .5);
-        super.addVizComponentAtPositionWithSize(scoreComponent, 0, 0, 1.0, 1.0);
+        super.addVizComponentAtPositionWithSize(mountain, 0, 0, 1.0, 0.9);
+        super.addVizComponentAtPositionWithSize(carOnMountain, 0, 0, 1.0, 0.9);
+        //super.addVizComponentAtPositionWithSize(scoreComponent, 0, 0, 1.0, 1.0);
     }
 
     public void updateEnvironmentVariableRanges() {

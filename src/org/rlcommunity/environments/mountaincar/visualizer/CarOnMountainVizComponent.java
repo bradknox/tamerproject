@@ -40,18 +40,18 @@ public class CarOnMountainVizComponent implements SelfUpdatingVizComponent, Obse
     private boolean showAction = true;
     private VizComponentChangeListener theChangeListener;
     
-    private Image theCarImage=null;
+    //private Image theCarImage=null;
 
     public CarOnMountainVizComponent(MountainCarVisualizer mc) {
         this.mcv = mc;
         mc.getTheGlueState().addObserver(this);
-        URL carImageURL=CarOnMountainVizComponent.class.getResource("/images/auto.png");
-        try {
-            theCarImage = ImageIO.read(carImageURL);
-            theCarImage=theCarImage.getScaledInstance(50,50,Image.SCALE_SMOOTH);
-        } catch (IOException ex) {
-            System.err.println("ERROR: Problem getting car image.");
-        }
+//        URL carImageURL=CarOnMountainVizComponent.class.getResource("/images/auto.png");
+//        try {
+//            theCarImage = ImageIO.read(carImageURL);
+//            theCarImage=theCarImage.getScaledInstance(50,50,Image.SCALE_SMOOTH);
+//        } catch (IOException ex) {
+//            System.err.println("ERROR: Problem getting car image.");
+//        }
         
     }
 

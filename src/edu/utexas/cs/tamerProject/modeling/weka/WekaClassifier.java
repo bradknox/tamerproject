@@ -104,7 +104,7 @@ public class WekaClassifier extends WekaModel {
 	
     public void addInstance(ClassificationSample sample){
     	double weight = sample.weight;
-    	System.out.println("adding instance <"+ Arrays.toString(sample.feats) + ">;  " + sample.label);
+    	//System.out.println("adding instance <"+ Arrays.toString(sample.feats) + ">;  " + sample.label);
     	if (this.numAttributes != sample.feats.length + 1) {
     		System.err.println("The number of attributes used to instantiate the model doesn't match the number in the sample to be added.");
     		System.err.println("Number from instantiation: " + this.numAttributes + ". Number in sample: "  + (sample.feats.length + 1));

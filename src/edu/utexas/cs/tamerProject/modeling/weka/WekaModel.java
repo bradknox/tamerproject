@@ -32,6 +32,7 @@ public abstract class WekaModel {
 	FastVector attrInfo;
 	int numAttributes;
 	boolean allowLowImportPrint = true;
+	boolean builtOnce = false;
 	
     
 	public WekaModel(int numFeatures) {
@@ -107,13 +108,18 @@ public abstract class WekaModel {
         try {dist = classifier.distributionForInstance(inst);}
         catch (Exception e){
         	if (data.numInstances() == 0) {return null;}
-            System.err.println("Exception while classifying instance: " + e);
-            System.err.println("Cause: " + e.getCause());
-			System.err.println("Has the classifier been built?");
-			System.err.println("Number of model instances: " + data.numInstances());
-            System.err.print("\nStack trace: ");
-            System.err.println("Make sure that classifier supports distributionForInstance().");
-            e.printStackTrace();
+        	if (!this.builtOnce) {
+        		System.out.println("Exception while classifying instance. Classifier has not been built. Try calling buildModel().");
+        	}
+        	else{
+	            System.err.println("Exception while classifying instance: " + e);
+	            System.err.println("Cause: " + e.getCause());
+				
+				System.err.println("Number of model instances: " + data.numInstances());
+	            System.err.print("\nStack trace: ");
+	            System.err.println("Make sure that classifier supports distributionForInstance().");
+	            e.printStackTrace();
+        	}
         }
         return dist;
     }
@@ -122,6 +128,7 @@ public abstract class WekaModel {
         try {
             classifier.buildClassifier(data);
             //System.out.println("Classifier " + classifier.getClass().getName() + " built.");
+            this.builtOnce = true;
         }
         catch (Exception e){
         	System.err.println("Exception while building classifier: " + e);

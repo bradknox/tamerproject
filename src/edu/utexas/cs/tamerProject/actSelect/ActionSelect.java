@@ -144,6 +144,11 @@ public class ActionSelect{
 					this.valFcnModel, obs, lastAct);
 			return chosenAction;
 		}
+		else if (this.selectionMethod.equals("vals-as-probs")) {
+			Action chosenAction = ActionSelect.chooseWValsAsProbs( 
+					this.valFcnModel, obs, lastAct);
+			return chosenAction;
+		}
 		else {
 			System.err.println("Action selection method " + this.selectionMethod + " not supported. Exiting.");
 			System.exit(0);
@@ -151,16 +156,18 @@ public class ActionSelect{
 		}
 	}
 	
-	
+
+
+
+
 	public void anneal(){
-		if (this.selectionMethod.equals("greedy")) {
-			;
-		}
+		if (this.selectionMethod.equals("greedy")) {;}
 		else if (this.selectionMethod.equals("e-greedy")) {
 			double annealRate = Double.valueOf(this.selectionParams.get("epsilonAnnealRate"));
 			double priorEpsilon = Double.valueOf(this.selectionParams.get("epsilon"));
 			selectionParams.put("epsilon", Double.toString(priorEpsilon * annealRate));
 		}
+		else if (this.selectionMethod.equals("vals-as-probs")) {;}
 		else {
 			System.err.println("Action selection method " + this.selectionMethod + " not supported. Exiting.");
 			System.exit(0);
@@ -172,6 +179,44 @@ public class ActionSelect{
 	
 	public Action greedyActSelect(Observation obs, Action lastAct) {
 		return ActionSelect.greedyActSelect(this.valFcnModel, obs, lastAct);
+	}
+	
+	
+	// TODO this was implemented quickly and never checked carefully for correctness
+	private static Action chooseWValsAsProbs(RegressionModel valFcnModel,
+			Observation obs, Action lastAct) {
+		ArrayList<Action> possActs = valFcnModel.getFeatGen().getPossActions(obs);
+		double[] actVals = valFcnModel.getStateActOutputs(obs, possActs);
+		
+		/*
+		 * Since action values may not add to 1, find their sum. We will effectively
+		 * divide by this sum to convert the values to probabilities.
+		 */
+		double sumOfActVals = 0;
+		for (double actVal : actVals) {
+			sumOfActVals += actVal;
+		}
+		
+		/*
+		 * Choose a value of cumulative probability (stretched from [0,1] to [0,sumOfActVals]). 
+		 */
+		double actRand = (new Random()).nextDouble() * sumOfActVals;
+		
+		/*
+		 * Iterate through action values until the cumulative probability is larger than 
+		 * actRand. Choose the action that put the cumulative probability over actRand.
+		 */
+		double cumProb = 0;
+		int chosenActI = -1;
+		for (int actI = 0; actI < actVals.length; actI++) {
+			cumProb += actVals[actI];
+			if (cumProb >= actRand) {
+				chosenActI = actI;
+				break;
+			}
+		}
+				
+		return possActs.get(chosenActI);
 	}
 	
 	private static Action greedyActSelect(RegressionModel valFcnModel, Observation obs, Action lastAct){

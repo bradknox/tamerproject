@@ -29,11 +29,11 @@ public class CartPoleVisualizer extends AbstractVisualizer implements GlueStateP
         SelfUpdatingVizComponent theTrackVisualizer = new CartPoleTrackComponent(this);
         SelfUpdatingVizComponent theCartVisualizer = new CartPoleCartComponent(this);
 
-        SelfUpdatingVizComponent scoreComponent = new GenericScoreComponent(this);
+        //SelfUpdatingVizComponent scoreComponent = new GenericScoreComponent(this);
 
         super.addVizComponentAtPositionWithSize(theTrackVisualizer, 0, 0, 1.0, 1.0);
         super.addVizComponentAtPositionWithSize(theCartVisualizer, 0, 0, 1.0, 1.0);
-        super.addVizComponentAtPositionWithSize(scoreComponent, 0, 0, 1.0, 1.0);
+        //super.addVizComponentAtPositionWithSize(scoreComponent, 0, 0, 1.0, 1.0);
     }
 
     public void checkCoreData() {
