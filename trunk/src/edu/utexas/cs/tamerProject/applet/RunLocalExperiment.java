@@ -200,11 +200,16 @@ public class RunLocalExperiment extends Observable{
 	 * Take a step using TinyGlue. Or, if all episodes have completed, wrap up.
 	 */
 	public void takeStep(boolean forceStep){
+		if (expFinished) {
+			stopExp();
+			return;
+		}
 		//System.out.println("Step timer: " + stepTimer);
 		///String timeStr = String.format("%f", ((new Date()).getTime() / 1000.0));
 		//System.out.print(timeStr.substring(timeStr.length() - 8, timeStr.length() - 3) + " ");
 		//System.out.println("step start time in RunLocalExperiment: " + String.format("%f", ((new Date()).getTime() / 1000.0)));
 		//System.out.println("\t Steps: "+ glue.getTimeStep());
+
 
 		boolean endOfEp = false;
 		if (RLApplet.DEBUG_TIME) {
@@ -239,13 +244,14 @@ public class RunLocalExperiment extends Observable{
 			}
 		}
 		if (totalSteps == maxTotalSteps || glue.getTimeStep() >= finishExpIfNumStepsInOneEp) 
-			{expFinished = true;}
+		{
+			expFinished = true;
+			stopExp();
+		}
 			
 		if (expFinished) { // "Experiment" is finished. Wrap things up.
     		System.out.println("Experiment finished. Killing here in run local exp");
     		stopExp();
-//    		if (stepTimer != null)
-//    			stepTimer.cancel(); 
 
     		glue.notifyObservers();
     		RLGlue.RL_cleanup();

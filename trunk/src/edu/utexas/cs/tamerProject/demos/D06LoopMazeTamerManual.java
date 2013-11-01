@@ -165,8 +165,8 @@ public class D06LoopMazeTamerManual extends TamerApplet {
 		rlPanel.init(agent, env);
 		this.getContentPane().add(rlPanel);
 		this.rlPanel.runLocal.addObserver(this);
-		rlPanel.runLocal.initExp();
-		rlPanel.runLocal.startExp();
+		rlPanel.runLocal.initExp(); // among other things, this calls agent_init()
+		rlPanel.runLocal.startExp(); // among other things, this calls agent_start() and begins the progression of time steps
 	}
 	
 }

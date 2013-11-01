@@ -44,9 +44,9 @@ public class PreExpPanel extends JPanel
 	
 	boolean startPressed = false;
 	
-	public boolean HITStateChecked = false;
-	boolean prevHITFinished = false;
-	private boolean hitIDGiven = false;
+	public boolean HITStateChecked = false; // TODO comment
+	boolean prevHITFinished = false; // TODO comment
+	private boolean hitIDGiven = false; // TODO comment
 	private String hitID = "";
 	
 	private char lastPressed = ' ';
