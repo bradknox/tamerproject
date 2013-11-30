@@ -2,7 +2,7 @@ package org.rlcommunity.environments.mario;
 
 /*
  * This implementation of Mario does not work with RL-Applet right now but may be easy to connect to it.
- * The implementation is by Mike Littman's group at Rutgers. I apologize to them for not 
+ * The implementation is by Michael Littman's group at Rutgers. I apologize to them for not 
  * having the full names and references and for changing the package name away from one that
  * identifies the code as being theirs; putting it here makes this codebase easier to navigate.
  */
