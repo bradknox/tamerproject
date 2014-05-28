@@ -3,6 +3,7 @@ package edu.utexas.cs.tamerProject.demos;
 import org.rlcommunity.agents.random.RandomAgent;
 
 
+import edu.utexas.cs.tamerProject.environments.cartarm.CartArm;
 import edu.utexas.cs.tamerProject.environments.loopmaze.LoopMaze;
 import edu.utexas.cs.tamerProject.environments.robotarm.RobotArm;
 import org.rlcommunity.environments.acrobot.Acrobot;
@@ -55,7 +56,7 @@ public class D01LoopmazeRandom extends RLApplet {
 		 * and at least a few environments with continuous state and discrete
 		 * actions (e.g., mountain car, cart pole, and acrobot).
 		 */
-		EnvironmentInterface env = new LoopMaze(); 
+		EnvironmentInterface env = new CartArm(); 
 		
 		
 		/*

@@ -32,8 +32,8 @@ public abstract class WekaModel {
 	FastVector attrInfo;
 	int numAttributes;
 	boolean allowLowImportPrint = true;
-	boolean builtOnce = false;
-	
+	protected boolean builtOnce = false;
+	public static boolean SUPPRESS_UNBUILT_MSG = false; 
     
 	public WekaModel(int numFeatures) {
 		initData(numFeatures);
@@ -108,7 +108,7 @@ public abstract class WekaModel {
         try {dist = classifier.distributionForInstance(inst);}
         catch (Exception e){
         	if (data.numInstances() == 0) {return null;}
-        	if (!this.builtOnce) {
+        	if (!this.builtOnce && !SUPPRESS_UNBUILT_MSG) {
         		System.out.println("Exception while classifying instance. Classifier has not been built. Try calling buildModel().");
         	}
         	else{
@@ -155,6 +155,9 @@ public abstract class WekaModel {
 		printAllInstances();
 	}
 	
+	public Classifier getModel() {
+		return this.classifier;
+	}
 	
 	 
 	public void loadDataAsArff(String envName, String timeStamp, String furtherID) {
@@ -252,5 +255,9 @@ public abstract class WekaModel {
     protected void lowImportancePrint(String s) {
     	if (allowLowImportPrint)
     		System.out.println(s);
+    }
+    
+    public boolean getBuiltOnce(){
+    	return this.builtOnce;
     }
 }

@@ -1,8 +1,7 @@
 package edu.utexas.cs.tamerProject.utils;
 
 /**
- * TODO Change the name of this so that it doesn't conflict with the Timer class in the Java API.
- * 
+ *
  * @author bradknox
  *
  */
