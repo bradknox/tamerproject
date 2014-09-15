@@ -35,6 +35,8 @@ public abstract class WekaModel {
 	protected boolean builtOnce = false;
 	public static boolean SUPPRESS_UNBUILT_MSG = false; 
     
+	public WekaModel(){}
+	
 	public WekaModel(int numFeatures) {
 		initData(numFeatures);
 		setUpClassifiers("");
@@ -51,7 +53,14 @@ public abstract class WekaModel {
 		setUpClassifiers(modelName);
     }
 	
-    protected abstract void initData(int numFeatures);
+    public WekaModel(String modelName, String[] featNames) {
+		initData(featNames.length, featNames);
+		setUpClassifiers(modelName);
+	}
+
+
+	protected abstract void initData(int numFeatures);
+    protected abstract void initData(int numFeatures, String[] featNames);
 	protected abstract void setUpClassifiers(String modelName);
 	
 	
@@ -60,6 +69,11 @@ public abstract class WekaModel {
 		classifiers = new ArrayList<Classifier>(); // for comparing models
 		setUpClassifiers(this.modelName);
 		initData(this.numAttributes);
+	}
+
+	public void clearSamples(){
+		data.delete();
+		uniques.clear();
 	}
 
 	
@@ -117,7 +131,7 @@ public abstract class WekaModel {
 				
 				System.err.println("Number of model instances: " + data.numInstances());
 	            System.err.print("\nStack trace: ");
-	            System.err.println("Make sure that classifier supports distributionForInstance().");
+	            System.err.println("Make sure that classifier supports distributionForInstance() and that the number of unlabeledAttributes is one less than instances.numAttributes.");
 	            e.printStackTrace();
         	}
         }
@@ -155,10 +169,11 @@ public abstract class WekaModel {
 		printAllInstances();
 	}
 	
+
 	public Classifier getModel() {
 		return this.classifier;
 	}
-	
+
 	 
 	public void loadDataAsArff(String envName, String timeStamp, String furtherID) {
 		String dataDir = GeneralAgent.RLLIBRARY_PATH + "/tamerCommon/data/" + envName;
@@ -259,5 +274,9 @@ public abstract class WekaModel {
     
     public boolean getBuiltOnce(){
     	return this.builtOnce;
+    }
+    
+    public Instances getData() {
+    	return this.data;
     }
 }

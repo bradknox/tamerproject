@@ -30,22 +30,39 @@ public class WekaClassifier extends WekaModel {
 	public WekaClassifier(int numFeatures) {
 		super(numFeatures);
 	}
-	public WekaClassifier(String modelName, int numFeatures){
+	public WekaClassifier(String modelName, int numFeatures) {
 		super(modelName, numFeatures);
 	}
-	
+	public WekaClassifier(String modelName, String[] featNames, String[] classNames) {
+		initData(featNames.length, featNames, classNames);
+		setUpClassifiers(modelName);
+	}
 
-	protected void initData(int numFeatures){
+	protected void initData(int numFeatures) {
+		initData(numFeatures, null, null);
+	}
+	
+	
+	protected void initData(int numFeatures, String[] featNames) {
+		initData(numFeatures, featNames, null);
+	}
+	protected void initData(int numFeatures, String[] featNames, String[] classNames) {
 		this.numAttributes = numFeatures + 1;
 		lowImportancePrint("Instantiating batch model with " + numAttributes
                            + " attributes.");
         attrInfo = new FastVector();
         for (int i = 0; i < numFeatures; i++){
-            attrInfo.addElement(new Attribute("" + (i+1)));
+        	String featName = featNames == null ? "" : featNames[i];
+            attrInfo.addElement(new Attribute(featName));
         }
         FastVector labelVec = new FastVector(WekaClassifier.numClasses);
         for (int i = 0; i < numClasses; i ++) {
-        	labelVec.addElement(i + "");
+        	if (classNames == null) {
+        		labelVec.addElement(i + "");
+        	}
+        	else {
+        		labelVec.addElement(classNames[i]);
+        	}
         }
         attrInfo.addElement(new Attribute("label", labelVec));
 
@@ -60,15 +77,15 @@ public class WekaClassifier extends WekaModel {
         try{
         	lowImportancePrint("Given model name: " + modelName);
         	if (modelName.equals("")) {
-        		modelName = "weka.classifiers.functions.Logistic -R 1";
+        		modelName = "";//"weka.classifiers.functions.Logistic -R 1";
         	}
         	
         	
-        	if (modelName.contains("Logistic")) {
-	    		Logistic logRegr = new Logistic();
-	    		this.classifiers.add(logRegr);
-        	}
-        	else{
+//        	if (modelName.contains("Logistic")) {
+//	    		Logistic logRegr = new Logistic();
+//	    		this.classifiers.add(logRegr);
+//        	}
+//        	else{
 	    		String[] tmpOptions;
 	    		String classname;
 	    		tmpOptions     = Utils.splitOptions(modelName);
@@ -76,7 +93,7 @@ public class WekaClassifier extends WekaModel {
 	    		tmpOptions[0]  = "";
 	    		Classifier cls = (Classifier) Utils.forName(Classifier.class, classname, tmpOptions);
 	    		this.classifiers.add(cls);
-        	}
+//        	}
 
 
 
@@ -118,7 +135,12 @@ public class WekaClassifier extends WekaModel {
     	inst.setWeight(weight);
     	inst.setClassValue(sample.label);
         data.add(inst);
-        System.out.println("Samples collected: " + data.numInstances());
+        if (data.numInstances() < 10 || 
+        		data.numInstances() % 30 == 0 && data.numInstances() < 100 ||
+        		data.numInstances() % 300 == 0 && data.numInstances() < 1000 ||
+        		data.numInstances() % 3000 == 0 && data.numInstances() < 10000 ||
+        		data.numInstances() % 30000 == 0)
+        		System.out.println("Samples collected: " + data.numInstances());
         uniques.add(new Double(sample.unique));
     }
     
@@ -179,5 +201,4 @@ public class WekaClassifier extends WekaModel {
         
         wbi.evaluateModel();
     }
-
 }

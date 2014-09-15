@@ -65,14 +65,24 @@ public class WekaRegressor extends WekaModel implements Externalizable{ //Serial
 		super(modelName, numFeatures, allowLowImportPrint);
 	}
 
+    public WekaRegressor(String modelName, String[] featNames){
+		super(modelName, featNames);
+	}
+    
+	
 	protected void initData(int numFeatures){
+		initData(numFeatures, null);
+	}
+	
+	protected void initData(int numFeatures, String[] featNames){
 		this.numAttributes = numFeatures + 1;
 		lowImportancePrint("Instantiating batch model with " + numAttributes
                            + " attributes.");
 		lowImportancePrint("Class: " + this);
         this.attrInfo = new FastVector();
         for (int i = 0; i < numFeatures; i++){
-            this.attrInfo.addElement(new Attribute("" + (i+1)));
+        	String featName = featNames == null ? "" : featNames[i];
+            this.attrInfo.addElement(new Attribute(featName + (i+1)));
         }
         this.attrInfo.addElement(new Attribute("Label"));
         this.data = new Instances("Regressor instances", attrInfo, 0);
