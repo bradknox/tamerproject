@@ -43,17 +43,17 @@ import org.rlcommunity.rlglue.codec.types.Reward_observation_terminal;
  */
 public class RobotArmState {
 
-	/*	
-	 * worldDims sets the discretization of joint angles. 
-	 * Also, its length is sets number of arm segments.
-	 */
-	public static final int[] worldDims = {20, 20, 10, 10}; 
-	
-	public static final Point2D origin = new Point2D.Double(0.5, 1.0);
-	public static final double[] SEG_LENS = {0.3, 0.1, 0.2, 0.1, 0.2, 0.05, 0.05}; // length of each arm segment
-	
-	public static final double graspRadius = 0.05;
-	public static final Point2D targetLoc = new Point2D.Double(0.8, 0.6); // The location of the goal
+    /*	
+     * worldDims sets the discretization of joint angles. 
+     * Also, its length is sets number of arm segments.
+     */
+    public static final int[] worldDims = {20, 20, 10, 10}; 
+    
+    public static final Point2D origin = new Point2D.Double(0.5, 1.0);
+    public static final double[] SEG_LENS = {0.3, 0.1, 0.2, 0.1, 0.2, 0.05, 0.05}; // length of each arm segment
+
+    public static final double graspRadius = 0.05;
+    public static final Point2D targetLoc = new Point2D.Double(0.8, 0.6); // The location of the goal
 
     private int[] agentPosition;
     private int[] agentPrevPosition;
