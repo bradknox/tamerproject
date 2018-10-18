@@ -1,4 +1,6 @@
-Once you download the code for this project, you will find a javadoc under tamerproject/doc/. [Probably won't by the original creators of this repository:] Once I take the time to figure out how to add text to the index.html file, I'll add some version of what's below.
+**This code repository was used for work on TAMER and TAMER+RL by Brad Knox and Peter Stone, along with a number of other valued collaborators. Relevant papers can be found here: http://bradknox.net/vita**
+
+Once you download the code for this project, you will find a javadoc under tamerproject/doc/.
 
 To familiarize yourself with this codebase, I suggest first running the demos files in the order in which they are named (D1..., D2..., and so on). Be sure to read their comments.
 
@@ -6,5 +8,3 @@ To familiarize yourself with this codebase, I suggest first running the demos fi
 All of the agents in this codebase should be compatible with RLGlue. Accordingly (and fitting the typical RL scenario), an agent receives an observation and a reward at each step from the environment, and at each step the agent returns an action. For some of the agents in here, such as TamerAgent? and ImitationAgent?, the reward received from the task environment (sometimes called MDP reward or environmental reward in papers on TAMER) is ignored so that learning comes only from a human. There are three key classes that should first be understood: GeneralAgent?, FeatGenerator?, and RegressionModel?. All three are abstract classes that help make this code modular, quick to adapt to a new environment. EnvModel? is another abstract class that may grow in importance later. Its children implement transition models that at least allow a sampling of a next state given a state and action. Other important classes are ActionSelect?, CreditAssign?, ExpAnalyzer?, RecordHandler?, TamerAgent?, TamerRLAgent (for TAMER+RL), and ImitationAgent? (for learning from demonstration and simple user control). This project also includes a large amount of source from the Weka project and from RL-Glue and RL-Library, as indicated by their respective package names.
 
 With the existing demos, play around with the buttons +, -, 0, 2, space, z, and /. The first four always have effects (unless they're actively disabled), and the others have effects (z and / give reward and space toggles training on and off).
-
-**FYI, push requests are welcome.**
